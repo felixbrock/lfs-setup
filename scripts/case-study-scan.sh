@@ -31,8 +31,10 @@ trap 'rm -f "$DENY"' EXIT
 if [ -f "$LFS_CONFIG/machine.env" ]; then
   grep -oE 'UUID=[0-9a-fA-F-]{8,}|nvme-[A-Za-z0-9_.-]+|usb-[A-Za-z0-9_.-]+|[A-Z]+[0-9]{2,}[A-Z0-9_]+_[0-9]+[A-Z0-9]*' \
     "$LFS_CONFIG/machine.env" 2>/dev/null | sed 's/^UUID=//' | sort -u >> "$DENY" || true
-  grep -oE 'LFS_USER=[A-Za-z0-9_]+' "$LFS_CONFIG/machine.env" 2>/dev/null | cut -d= -f2 >> "$DENY" || true
 fi
+# username is matched word-boundaried below (not substring) so the public
+# GitHub org name in clone URLs is not a false positive
+USER_TERM=$(grep -oE 'LFS_USER=[A-Za-z0-9_]+' "$LFS_CONFIG/machine.env" 2>/dev/null | cut -d= -f2 || true)
 # maintained free-form denylist (model names, peripheral names, MACs)
 [ -f "$LFS_CONFIG/case-study-denylist.txt" ] && \
   grep -vE '^\s*(#|$)' "$LFS_CONFIG/case-study-denylist.txt" >> "$DENY"
@@ -44,6 +46,13 @@ while IFS= read -r term; do
     FAIL=1
   fi
 done < <(sort -u "$DENY")
+
+# username: word-boundary match (catches /home/<user> and standalone; the
+# public org name that embeds it in clone URLs is intentionally not a hit)
+if [ -n "${USER_TERM:-}" ] && grep -iwq "$USER_TERM" "$FILE"; then
+  echo "HARD FAIL: username present (word-boundaried): $USER_TERM"
+  FAIL=1
+fi
 
 # --- HARD: generic shapes that are never safe in public --------------
 if grep -qiE '\b([0-9a-f]{2}:){5}[0-9a-f]{2}\b' "$FILE"; then

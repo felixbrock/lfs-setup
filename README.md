@@ -20,21 +20,72 @@ two steps further:
    kernel and toolchain changes, and anything that needs physical
    hands.
 
-The result is not a toy. It boots a real laptop and is used as a daily
-driver.
+The result is not a toy. It boots a real laptop, with working GPU
+acceleration, Wi-Fi, and Bluetooth, and is used as a daily driver —
+with Claude Code running *on* the LFS system itself.
 
-## Quickstart
+> **Two audiences read this file.** If you are a **human** deciding
+> whether to run this, read [For the human](#for-the-human) and stop —
+> it is short by design. If you are an **agent** operating the system,
+> or a person who wants the full technical picture, everything from
+> [For the agent](#for-the-agent) onward is written for you, and it is
+> most of the file.
 
-**Reading.** [OPERATIONS.md](OPERATIONS.md) is the operating model —
-how a source-built system stays a viable daily driver.
-[CLAUDE.md](CLAUDE.md) is the contract the agent operates under,
-[AGENT-DESIGN.md](AGENT-DESIGN.md) the register of every deviation
-from the LFS book, [PROVENANCE.md](PROVENANCE.md) the supply-chain
-rules. For how this feels in practice, start with the
-[case studies](case-studies/) — real diagnosis chains from operating
-the system, written up as transferable patterns.
+## For the human
 
-**Operating with an agent** (the intended mode):
+You do not build or run this system yourself. You **supervise an agent
+that does.** Your job is to point it at this repository, keep your
+existing system running alongside it as a safety net, and stay
+available for the few decisions and physical steps only you can make.
+
+### Quickstart
+
+1. **Get a coding agent on its strongest model.** This was built and is
+   operated with Claude Code on Claude's frontier tier (currently
+   Fable 5). A source build runs for days; weaker models drift over
+   that distance. Other agents work too (see
+   [Operating](#operating)) — the same model rule holds.
+2. **Create two private repositories of your own** for everything
+   specific to your machine: a *config* repo (device paths, secrets
+   policy) and an *ops* repo (your operational history). Nothing
+   machine-specific ever goes in this public blueprint — the agent
+   walks you through setting them up. Why the separation matters is
+   [case study 005](case-studies/005-operating-in-public-without-leaking.md).
+3. **Point the agent at this repo and say what you want** — "build this
+   system," or on a built one, ask it where things stand. The contracts
+   and skills here carry the procedure; you do not need to know the
+   steps.
+4. **Stay in the loop.** The agent hands you exactly two kinds of thing:
+   go/no-go on kernel and toolchain changes, and actions that need root
+   or physical hands. Everything else it does itself, and journals.
+
+### Requirements
+
+Front-loaded, because this runs *alongside* your real system for weeks
+before it can replace anything:
+
+- **A host system you keep.** You build inside a chroot on an existing
+  Linux install (any mainstream distro, with root). That install stays
+  as build host *and* safety net until you have proven the new system
+  and deliberately chosen to retire it. This process never overwrites
+  your only machine.
+- **Separate target media.** A spare disk, SD card, or partition to
+  install onto — never your live root.
+- **Hardware headroom.** A multi-core machine (compiles take hours to
+  days) and tens of GB of disk for sources and the build tree.
+- **A frontier-model coding agent** (see step 1) and an account that
+  can run it through a long, mostly-autonomous build.
+- **Your time and judgment.** You are the supervisor: expect go/no-go
+  moments and hands-on-hardware steps spread across the build.
+
+## For the agent
+
+Everything below is the operational picture — the contracts, the
+machinery, and the hard-won patterns. It is the bulk of this
+repository, written for the operator (an agent, or a deeply technical
+reader), not for the supervising human.
+
+### Operating
 
 ```sh
 git clone https://github.com/felixbrock/agent-lfs.git ~/repos/agent-lfs
@@ -47,11 +98,10 @@ The repo is written to be self-sufficient for an agent: telling it
 The operator contract, the vendored book pages, the scripts, and the
 step-by-step skills (`.claude/skills/`: `/lfs-status`, `/lfs-upgrade`,
 `/lfs-sweep`) carry the procedure; the hash ledger and file manifests
-keep it honest. Two caveats: use a flagship model (this system was
-built and is operated with Claude's frontier tier, currently Fable 5 —
-a days-long autonomous build is exactly where weaker models drift),
-and expect to stay in the loop for root commands and go/no-go calls —
-the contract makes the agent hand those to you rather than guess.
+keep it honest. Two caveats: use a flagship model (a days-long
+autonomous build is exactly where weaker models drift), and expect to
+stay in the loop for root commands and go/no-go calls — the contract
+makes the agent hand those to the human rather than guess.
 
 Not a Claude Code user? The contract is agent-agnostic and mirrored
 at [AGENTS.md](AGENTS.md), the convention read by
@@ -62,53 +112,32 @@ skills are plain markdown — point your agent at
 `.claude/skills/*/SKILL.md` when a procedure applies. The same model
 rule holds: run whichever agent on the strongest model you have.
 
-Everything machine-specific (device paths, VM access, issues repo) is
-sourced from a private sibling config repo at `$LFS_CONFIG` (default
-`~/repos/lfs-config`) — create your own with a `machine.env`; the
-blueprint never needs editing for instance values (see
-[Three-repo split](#three-repo-split)).
+Everything machine-specific (device paths, VM access, the operations
+log) is sourced from the private sibling repos — see
+[Three-repo split](#three-repo-split); the blueprint never needs
+editing for instance values.
 
-**Building the system by hand.** The same path the agent takes — the
-LFS book, as scripts. Expect days of compile time and a human in the
-loop for root steps:
+### Reading order
 
-1. Host prerequisites per LFS 13.0 ch. 2–3 (the exact book pages the
-   scripts were derived from are vendored under `book/` and alongside
-   each script), then `sudo scripts/prep-ch4.sh` — creates `/mnt/lfs`
-   and the unprivileged `lfs` build user.
-2. Stage sources into `/mnt/lfs/sources` — every artifact must first
-   pass `scripts/verify-source.sh` against the pinned sha256 ledger
-   (`ops/sources-sha256.txt`).
-3. Run the chapters in order: `build/ch5/run-all.sh` and
-   `build/ch6/run-all.sh` as the `lfs` user; `sudo scripts/prep-ch7.sh`
-   (read its security note first) installs the chroot helper for
-   `build/ch7` and `build/ch8`; chapter 9's configuration scripts and
-   the BLFS desktop tiers (`build/blfs/`) follow. Every package script
-   is stamped and writes a file manifest, so reruns are surgical.
-4. Boot-test the result in QEMU: `scripts/vm-up.sh` (`--display` for a
-   window), `scripts/vm-down.sh` to shut it down safely.
+- [OPERATIONS.md](OPERATIONS.md) — the operating model: how a
+  source-built system stays a viable daily driver.
+- [CLAUDE.md](CLAUDE.md) — the contract the agent operates under.
+- [AGENT-DESIGN.md](AGENT-DESIGN.md) — the register of every deviation
+  from the LFS book.
+- [PROVENANCE.md](PROVENANCE.md) — the supply-chain rules.
+- [case-studies/](case-studies/) — real diagnosis chains from operating
+  the system, written up as transferable patterns. The best sense of
+  what this is actually like.
 
-## Status (2026-07-17)
-
-**The system runs on real hardware.** The build passed three
-verification gates (base build, desktop replication, daily-driver
-sign-off). The current phase is dual-boot: the system boots the
-owner's laptop from a LUKS2-encrypted microSD card via UEFI/GRUB and a
-purpose-built initramfs — with working GPU acceleration (Mesa iris),
-Wi-Fi, Bluetooth, NetworkManager, and Claude Code running *on* the LFS
-system itself. The card is the live system and source of truth; the
-original Arch Linux install remains as build host and safety net until
-a final backup and sign-off retires it.
-
-## How it works
+### How it works
 
 The repo is the single source of truth. Every package is a build
 script, every deviation from the LFS book is registered, and the
 running system never diverges from what is committed here. The agent
 operates around that spec in three roles:
 
-- **Package manager** — build a new version in the chroot, diff the
-  file manifests, apply the diff, boot-test, promote.
+- **Package manager** — build a new version, diff the file manifests,
+  apply the diff onto a fresh snapshot, boot-test, promote.
 - **Security monitor** — a scheduled cloud routine sweeps CVE trackers
   and release feeds for every installed component (~290 tracked).
 - **Incident responder** — open security findings are picked up at the
@@ -116,20 +145,19 @@ operates around that spec in three roles:
 
 Day to day, that looks like this:
 
-- Packages are built either in a chroot on the build host (batches are
-  applied to the live card via manifest copies,
-  `build/gated/apply-card.sh`) or natively on the live system
-  (`scripts/live-run-all.sh` — same hash gate, stamps, and manifests).
-- A QEMU VM twin boot-tests risky changes before they touch the real
-  system.
-- Two agent instances cooperate — one on the build host, one on the
-  live LFS system — coordinated through an on-machine journal
-  (`/var/lib/agent/STATE.md`) and this repo.
+- Packages are built either in a chroot on the build host or natively
+  on the live system (`scripts/live-run-all.sh` — same hash gate,
+  stamps, and manifests); host-built batches are applied to the target
+  via manifest copies.
+- A QEMU VM twin boot-tests boot-critical changes before they touch the
+  real system.
+- Agent work is coordinated through an on-machine journal
+  (`/var/lib/agent/STATE.md`) and this repo, so any session can
+  reconstruct where things stand without relying on chat history.
 
-The diagram shows the target operating model for the next phase, when
-the system moves to the permanent internal disk (snapshots, boot
-counting, and the rescue root exist in that design — see
-AGENT-DESIGN.md D1–D3 — but not yet on the microSD):
+The diagram shows the operating model — the agent working against the
+repo-as-spec, with snapshots, boot counting, and a rescue root
+providing automatic rollback (AGENT-DESIGN.md D1–D3):
 
 ```mermaid
 flowchart TB
@@ -148,9 +176,9 @@ flowchart TB
     end
 
     subgraph GH["GitHub"]
-        REPO["Public blueprint repo (this)<br/>build scripts, operator contracts,<br/>skills, sweep scripts, ledger"]
-        CONFIG["Private config repo<br/>machine.env, instance docs,<br/>gate history, dotfiles"]
-        ISSUES["Issues (on the private repo)<br/>= findings channel<br/>'security: N actionable' +<br/>'sweep failing' self-alerts"]
+        REPO["Public blueprint repo (this)<br/>build scripts, operator contracts,<br/>skills, sweep scripts, case studies"]
+        PRIV["Private repos (config + ops)<br/>machine.env, instance scripts,<br/>live ledger, gate history"]
+        ISSUES["Issues (on the private ops repo)<br/>= findings channel<br/>'security: N actionable' +<br/>'sweep failing' self-alerts"]
     end
 
     subgraph SYS["LFS system — the live machine (agent-operated daily driver)"]
@@ -170,7 +198,7 @@ flowchart TB
     ISSUES -->|notification email| OWNER
     ISSUES -->|open findings picked up<br/>at session bootstrap| AGENT
     REPO -->|contracts + skills<br/>loaded every session| AGENT
-    CONFIG -->|machine.env +<br/>local contract| AGENT
+    PRIV -->|machine.env +<br/>local contract + ops scripts| AGENT
     AGENT -->|every fix lands as a script<br/>change, committed back| REPO
     AGENT -->|upgrade: bump version,<br/>rebuild package| CHROOT
     CHROOT -->|manifest diff applied<br/>onto a fresh snapshot| SNAP
@@ -210,13 +238,13 @@ The pieces, in plain terms:
 - **Issue → fix loop.** Every session starts by listing open security
   issues. The agent triages, upgrades the affected package, boot-tests,
   promotes, commits, and closes the issue.
-- **Safe changes on a live machine** (target model). Every upgrade
-  batch goes onto a fresh btrfs snapshot; systemd-boot boot counting
-  promotes it after a successful boot or automatically falls back to
-  the previous known-good entry. If even the fallback fails, a minimal
-  rescue root — its own boot entry, never upgraded together with the
-  main root — comes up reachable over SSH so the agent can repair the
-  system without physical hands.
+- **Safe changes on a live machine.** Every upgrade batch goes onto a
+  fresh btrfs snapshot; systemd-boot boot counting promotes it after a
+  successful boot or automatically falls back to the previous
+  known-good entry. If even the fallback fails, a minimal rescue root —
+  its own boot entry, never upgraded together with the main root —
+  comes up reachable over SSH so the agent can repair the system
+  without physical hands.
 - **The machine remembers.** The system carries its own state: a
   journal (STATE.md), an append-only action log, and per-package file
   manifests. Any future session can reconstruct where things stand
@@ -224,34 +252,28 @@ The pieces, in plain terms:
   property is kernel-enforced (`chattr +a`): the agent writes its own
   audit trail but cannot rewrite it.
 
-## Case studies
+### Building by hand
 
-Operating a source-built daily driver generates the best teaching
-material there is: real failures, diagnosed to root cause, with the
-dead ends left in. Selected episodes are published in
-[case-studies/](case-studies/) after the fact — past-tense, curated,
-and deliberately delayed for anything security-relevant. The public
-repo teaches the timeless; live operational state never appears here
-(see the split below for why).
+The same path the agent takes — the LFS book, as scripts. Expect days
+of compile time and a human in the loop for root steps:
 
-- [001 — The touchpad that insisted it was a mouse](case-studies/001-touchpad-enumeration.md):
-  four kernel revisions from "PS/2 Generic Mouse" to a real multitouch
-  device, with two Kconfig traps and the config-verify-gate pattern
-  that catches them.
-- [002 — The GPU that was dark for days](case-studies/002-the-gpu-that-was-dark.md):
-  a desktop software-rendered on the CPU for its entire life, and the
-  initramfs-firmware rule that explains why.
-- [003 — The invisible LUKS prompt](case-studies/003-the-invisible-luks-prompt.md):
-  a one-line change exposes a boot-console gap that had been latent for
-  ten kernel revisions, held harmless by coincidence.
-- [004 — The build environment richer than the machine](case-studies/004-the-build-env-richer-than-the-machine.md):
-  three dependencies that hid in the chroot until the target had to
-  build for itself — why "prove the native pipeline" is a real gate.
-- [005 — Operating a personal machine in public without leaking it](case-studies/005-operating-in-public-without-leaking.md):
-  the accumulation threat model, the three-repo split, and why a
-  mechanical leak gate beats a sanitization checklist.
+1. Host prerequisites per LFS 13.0 ch. 2–3 (the exact book pages the
+   scripts were derived from are vendored under `book/` and alongside
+   each script), then `sudo scripts/prep-ch4.sh` — creates `/mnt/lfs`
+   and the unprivileged `lfs` build user.
+2. Stage sources into `/mnt/lfs/sources` — every artifact must first
+   pass `scripts/verify-source.sh` against the pinned sha256 ledger
+   (`ops/sources-sha256.txt`).
+3. Run the chapters in order: `build/ch5/run-all.sh` and
+   `build/ch6/run-all.sh` as the `lfs` user; `sudo scripts/prep-ch7.sh`
+   (read its security note first) installs the chroot helper for
+   `build/ch7` and `build/ch8`; chapter 9's configuration scripts and
+   the BLFS desktop tiers (`build/blfs/`) follow. Every package script
+   is stamped and writes a file manifest, so reruns are surgical.
+4. Boot-test the result in QEMU: `scripts/vm-up.sh` (`--display` for a
+   window), `scripts/vm-down.sh` to shut it down safely.
 
-## Three-repo split
+### Three-repo split
 
 The system is defined across three repositories:
 
@@ -281,15 +303,16 @@ your own private config and ops repos — the blueprint never needs
 editing for machine-specific values, and your operational history
 never needs publishing.
 
-## Provenance
+### Provenance
 
 Every artifact — source tarball, Python wheel, vendor package, static
 binary — passes a deterministic gate (`scripts/verify-source.sh`)
 before it may be staged or built. Known artifacts must byte-match the
-committed sha256 ledger (`ops/sources-sha256.txt`, 400+ pins). New
-artifacts need an independently published hash (LFS/BLFS book or
-upstream) and are then pinned permanently. A mismatch is treated as a
-supply-chain event, not an inconvenience.
+committed sha256 ledger (the blueprint ships an empty ledger; a running
+instance keeps its live one private via `LFS_LEDGER`). New artifacts
+need an independently published hash (LFS/BLFS book or upstream) and
+are then pinned permanently. A mismatch is treated as a supply-chain
+event, not an inconvenience.
 
 Sources come only from canonical upstream hosts; binaries only from
 vendor-official endpoints (the full table and known limitations are in
@@ -297,23 +320,52 @@ PROVENANCE.md). If you reproduce this system, the ledger guarantees
 you build from the exact bytes this system was built and boot-tested
 from.
 
-## Next steps
+### Case studies
 
-**Upstream the fixes.** Findings from the build that belong in
-upstream trackers or the LFS dev list:
-   - yajl 2.1.0: CMake 4 incompatibility (LOCATION property removal);
-     fixed here by trimming tool/test subdirs +
-     CMAKE_POLICY_VERSION_MINIMUM (build/blfs/scripts/130-yajl.sh)
-   - i3blocks 1.5: `make install` race under parallel make
-     (install-data-local rename; needs -j1 —
-     build/blfs/scripts/133-i3blocks.sh)
-   - unzip60: unbuildable with GCC 15's C23 default; documented
-     libarchive replacement path (build/blfs/scripts-gatec/203-unzip.sh)
-   - XML-Parser 2.54: new hard runtime deps (File::ShareDir chain)
-     that the LFS book will hit at its next edition
-     (build/ch8/425-427*.sh)
-   - GCC 15.2 pass 1 under a GCC 16 host: libcody u8"" / C++20
-     breakage, pass-1-only gnu++17 pin (build/ch5/20-gcc-pass1.sh)
+Operating a source-built daily driver generates the best teaching
+material there is: real failures, diagnosed to root cause, with the
+dead ends left in. Selected episodes are published in
+[case-studies/](case-studies/) after the fact — past-tense, curated,
+delayed for anything security-relevant, and passed through a mechanical
+leak gate. The public repo teaches the timeless; live operational state
+never appears here (see [case study 005](case-studies/005-operating-in-public-without-leaking.md)
+for why).
+
+- [001 — The touchpad that insisted it was a mouse](case-studies/001-touchpad-enumeration.md):
+  four kernel revisions from "PS/2 Generic Mouse" to a real multitouch
+  device, with two Kconfig traps and the config-verify-gate pattern
+  that catches them.
+- [002 — The GPU that was dark for days](case-studies/002-the-gpu-that-was-dark.md):
+  a desktop software-rendered on the CPU for its entire life, and the
+  initramfs-firmware rule that explains why.
+- [003 — The invisible LUKS prompt](case-studies/003-the-invisible-luks-prompt.md):
+  a one-line change exposes a boot-console gap that had been latent for
+  ten kernel revisions, held harmless by coincidence.
+- [004 — The build environment richer than the machine](case-studies/004-the-build-env-richer-than-the-machine.md):
+  three dependencies that hid in the chroot until the target had to
+  build for itself — why "prove the native pipeline" is a real gate.
+- [005 — Operating a personal machine in public without leaking it](case-studies/005-operating-in-public-without-leaking.md):
+  the accumulation threat model, the three-repo split, and why a
+  mechanical leak gate beats a sanitization checklist.
+
+### Upstreamable fixes
+
+Findings from the build that belong in upstream trackers or the LFS dev
+list:
+
+- yajl 2.1.0: CMake 4 incompatibility (LOCATION property removal);
+  fixed here by trimming tool/test subdirs +
+  CMAKE_POLICY_VERSION_MINIMUM (build/blfs/scripts/130-yajl.sh)
+- i3blocks 1.5: `make install` race under parallel make
+  (install-data-local rename; needs -j1 —
+  build/blfs/scripts/133-i3blocks.sh)
+- unzip60: unbuildable with GCC 15's C23 default; documented
+  libarchive replacement path (build/blfs/scripts-gatec/203-unzip.sh)
+- XML-Parser 2.54: new hard runtime deps (File::ShareDir chain)
+  that the LFS book will hit at its next edition
+  (build/ch8/425-427*.sh)
+- GCC 15.2 pass 1 under a GCC 16 host: libcody u8"" / C++20
+  breakage, pass-1-only gnu++17 pin (build/ch5/20-gcc-pass1.sh)
 
 ## License
 
