@@ -66,7 +66,7 @@ Everything machine-specific (device paths, VM access, issues repo) is
 sourced from a private sibling config repo at `$LFS_CONFIG` (default
 `~/repos/lfs-config`) — create your own with a `machine.env`; the
 blueprint never needs editing for instance values (see
-[Two-repo split](#two-repo-split)).
+[Three-repo split](#three-repo-split)).
 
 **Building the system by hand.** The same path the agent takes — the
 LFS book, as scripts. Expect days of compile time and a human in the
@@ -259,12 +259,15 @@ The system is defined across three repositories:
   (`machine.env`), personal dotfiles, verification state,
   credentials policy.
 
-Both repos are checked out as siblings; blueprint scripts and skills
-find the instance half via `$LFS_CONFIG` (default `~/repos/lfs-config`)
-and source `machine.env` from there. To run your own system from this
-blueprint, create your own private config repo with your own
-`machine.env` — the blueprint never needs editing for machine-specific
-values.
+All three are checked out as siblings. Blueprint scripts and skills
+find the config half via `$LFS_CONFIG` (default `~/repos/lfs-config`)
+and source `machine.env` from there, which in turn points at the ops
+repo (`LFS_OPS`) and the live ledger (`LFS_LEDGER`). Instance
+operations are RUN FROM the ops repo, so their machinery and ledger
+resolve privately. To run your own system from this blueprint, create
+your own private config and ops repos — the blueprint never needs
+editing for machine-specific values, and your operational history
+never needs publishing.
 
 ## Provenance
 
