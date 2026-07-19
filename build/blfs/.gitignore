@@ -1,0 +1,23 @@
+# extracted BLFS book HTML (re-fetch via blfs-book-13.0-systemd-html.tar.xz)
+appendices/
+basicnet/
+general/
+gnome/
+images/
+introduction/
+kde/
+lxde/
+lxqt/
+mail/
+multimedia/
+networking/
+postlfs/
+pst/
+server/
+stylesheets/
+x/
+xfce/
+xsoft/
+*.html
+blfs-book-*.tar.xz
+blfs-systemd-units-*.tar.xz

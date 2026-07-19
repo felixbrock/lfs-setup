@@ -1,0 +1,8 @@
+# Provenance ledger — sha256 pins of every artifact this system builds
+# from (see PROVENANCE.md and scripts/verify-source.sh).
+#
+# This blueprint copy is intentionally EMPTY: the ledger is an
+# INSTANCE artifact (it is, in effect, the machine's SBOM) and builds
+# up as verify-source.sh pins artifacts on first verified download.
+# A private instance keeps its live ledger out-of-repo via the
+# LFS_LEDGER environment variable (set it in your machine.env).

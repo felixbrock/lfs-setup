@@ -1,0 +1,26 @@
+# Coverage-tripwire ignore/alias list (scripts/coverage-check.sh).
+# One entry per line: "name reason". Every entry MUST say why it needs no
+# monitoring of its own — usually because a tier-1b report already covers
+# the bundle it ships in. No reason, no entry.
+bq google-cloud-sdk component (tier 1b: gcloud)
+gsutil google-cloud-sdk component (tier 1b: gcloud)
+google-cloud-sdk gcloud layout dir in /opt (tier 1b: gcloud)
+code vscode launcher (tier 1b: vscode)
+containerd docker static bundle, versioned with it (tier 1b: docker)
+containerd-shim-runc-v2 docker static bundle (tier 1b: docker)
+ctr docker static bundle (tier 1b: docker)
+runc docker static bundle (tier 1b: docker)
+dockerd docker static bundle (tier 1b: docker)
+docker-init docker static bundle (tier 1b: docker)
+docker-proxy docker static bundle (tier 1b: docker)
+corepack node bundle (tier 1b: node)
+npm node bundle (tier 1b: node)
+npx node bundle (tier 1b: node)
+nodejs node layout dir in /opt (tier 1b: node)
+google-chrome chrome wrapper symlink (tier 1b: chrome)
+google-chrome-stable chrome wrapper symlink (tier 1b: chrome)
+google chrome deb layout dir in /opt (tier 1b: chrome)
+brave-bin brave layout dir in /opt (tier 1b: brave)
+rg ripgrep binary name (tier 1b + inventory: ripgrep)
+gateb-check our own repo script
+screenshot-region our own shim (900, flameshot interim)

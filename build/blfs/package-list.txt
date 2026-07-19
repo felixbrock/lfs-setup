@@ -1,0 +1,175 @@
+# BLFS desktop build list for LFS 13.0-systemd — mapped from BLFS 13.0
+# stable-systemd book 2026-07-09 (see config repo GATE-B-PLAN.md). Format:
+# NN | name-version | url | md5 ("-" = none in book) | notes
+# Build order is top to bottom. Preliminary: export XORG_PREFIX=/usr and
+# XORG_CONFIG="--prefix=$XORG_PREFIX --sysconfdir=/etc --localstatedir=/var --disable-static"
+
+001 | linux-pam-1.7.2 | https://github.com/linux-pam/linux-pam/releases/download/v1.7.2/Linux-PAM-1.7.2.tar.xz | 934c26eca3fada956356a30489e86291 | pam.d system-* files; then shadow+systemd reinstall
+002 | shadow-4.19.3-REBUILD | reuse-lfs-source | - | reinstall with PAM per BLFS Linux-PAM page
+003 | systemd-259.1-REBUILD | reuse-lfs-source | - | BLFS rebuild with PAM for logind/pam_systemd
+004 | cmake-4.2.3 | https://cmake.org/files/v4.2/cmake-4.2.3.tar.gz | 803a1720ec822a8660118a38ca51fc1b | build tool
+005 | libpng-1.6.55 | https://downloads.sourceforge.net/libpng/libpng-1.6.55.tar.xz | bc950b5a06ec1028285e14a127f6fb6e | cairo, feh
+006 | freetype-2.14.1 | https://downloads.sourceforge.net/freetype/freetype-2.14.1.tar.xz | 78c7d7450fb7d0999ccd029f84094340 | --with-harfbuzz=dynamic, no rebuild
+007 | fontconfig-2.17.1 | https://gitlab.freedesktop.org/api/v4/projects/890/packages/generic/fontconfig/2.17.1/fontconfig-2.17.1.tar.xz | f68f95052c7297b98eccb7709d817f6a | Xorg libs, pango
+008 | graphite2-1.3.14 | https://github.com/silnrsi/graphite/releases/download/1.3.14/graphite2-1.3.14.tgz | 1bccb985a7da01092bfb53bb5041e836 | harfbuzz
+009 | glib-2.86.4 | https://download.gnome.org/sources/glib/2.86/glib-2.86.4.tar.xz | f2233a826c952aaae42b4a61611a06a4 | i3/rofi/pipewire/polkit
+010 | gobject-introspection-1.86.0 | https://download.gnome.org/sources/gobject-introspection/1.86/gobject-introspection-1.86.0.tar.xz | fa0f2ae76868bf35ff725f940d75ec16 | then glib rebuild -D introspection=enabled
+011 | harfbuzz-12.3.2 | https://github.com/harfbuzz/harfbuzz/releases/download/12.3.2/harfbuzz-12.3.2.tar.xz | 10040432f566e50bda84bfba8ad80b8d | pango
+012 | libjpeg-turbo-3.1.3 | https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.1.3/libjpeg-turbo-3.1.3.tar.gz | d23f3be7e58ad79d297845e64807472c | imlib2/feh/scrot
+013 | giflib-5.2.2 | https://sourceforge.net/projects/giflib/files/giflib-5.2.2.tar.gz | 913dd251492134e235ee3c9a91987a4d | feh
+014 | pixman-0.46.4 | https://www.cairographics.org/releases/pixman-0.46.4.tar.gz | c08173c8e1d2cc79428d931c13ffda59 | cairo, xorg-server, picom
+015 | fribidi-1.0.16 | https://github.com/fribidi/fribidi/releases/download/v1.0.16/fribidi-1.0.16.tar.xz | 333ad150991097a627755b752b87f9ff | pango
+016 | libxml2-2.15.1 | https://download.gnome.org/sources/libxml2/2.15/libxml2-2.15.1.tar.xz | fcf38f534bb8996984dba978ee3e27f4 | shared-mime-info
+017 | shared-mime-info-2.4 | https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/2.4/shared-mime-info-2.4.tar.gz | aac56db912b7b12a04fb0018e28f2f36 | gdk-pixbuf
+018 | gdk-pixbuf-2.44.5 | https://download.gnome.org/sources/gdk-pixbuf/2.44/gdk-pixbuf-2.44.5.tar.xz | 1cde6bd5665107fa10d1deef32ec8c4c | rofi, libnotify
+019 | duktape-2.7.0 | https://duktape.org/duktape-2.7.0.tar.xz | b3200b02ab80125b694bae887d7c1ca6 | polkit
+020 | lua-5.4.8 | https://www.lua.org/ftp/lua-5.4.8.tar.gz | 81cf5265b8634967d8a7480d238168ce | wireplumber; +blfs lua shared_library patch
+021 | libsndfile-1.2.2 | https://github.com/libsndfile/libsndfile/releases/download/1.2.2/libsndfile-1.2.2.tar.xz | 04e2e6f726da7c5dc87f8cf72f250d04 | pulseaudio (pactl)
+022 | alsa-lib-1.2.15.3 | https://www.alsa-project.org/files/pub/lib/alsa-lib-1.2.15.3.tar.bz2 | ffa5bcb190fa08fe7d3979ceeceb2648 | pipewire ALSA SPA
+023 | util-macros-1.20.2 | https://www.x.org/pub/individual/util/util-macros-1.20.2.tar.xz | 5f683a1966834b0a6ae07b3680bcb863 | Xorg
+024 | xorgproto-2025.1 | https://xorg.freedesktop.org/archive/individual/proto/xorgproto-2025.1.tar.xz | 15534fa6fb13a6a70afe7561c1424f3c | Xorg
+025 | libXau-1.0.12 | https://www.x.org/pub/individual/lib/libXau-1.0.12.tar.xz | 4c9f81acf00b62e5de56a912691bd737 | libxcb
+026 | libXdmcp-1.1.5 | https://www.x.org/pub/individual/lib/libXdmcp-1.1.5.tar.xz | ce0af51de211e4c99a111e64ae1df290 | libxcb
+027 | xcb-proto-1.17.0 | https://xorg.freedesktop.org/archive/individual/proto/xcb-proto-1.17.0.tar.xz | c415553d2ee1a8cea43c3234a079b53f | libxcb
+028 | libxcb-1.17.0 | https://xorg.freedesktop.org/archive/individual/lib/libxcb-1.17.0.tar.xz | 96565523e9f9b701fcb35d31f1d4086e | everything X
+029 | xtrans-1.6.0 | https://www.x.org/pub/individual/lib/xtrans-1.6.0.tar.xz | 6ad67d4858814ac24e618b8072900664 | Xorg libs
+030 | libX11-1.8.13 | https://www.x.org/pub/individual/lib/libX11-1.8.13.tar.xz | b617a053d2003cc81309f4e13d01379c | Xorg libs
+031 | libXext-1.3.7 | https://www.x.org/pub/individual/lib/libXext-1.3.7.tar.xz | ea8149187a26e9df6dbd94a60b3d8da0 | Xorg libs
+032 | libFS-1.0.10 | https://www.x.org/pub/individual/lib/libFS-1.0.10.tar.xz | c5cc0942ed39c49b8fcd47a427bd4305 | Xorg libs
+033 | libICE-1.1.2 | https://www.x.org/pub/individual/lib/libICE-1.1.2.tar.xz | d1ffde0a07709654b20bada3f9abdd16 | Xorg libs
+034 | libSM-1.2.6 | https://www.x.org/pub/individual/lib/libSM-1.2.6.tar.xz | 3aeeea05091db1c69e6f768e0950a431 | Xorg libs
+035 | libXScrnSaver-1.2.5 | https://www.x.org/pub/individual/lib/libXScrnSaver-1.2.5.tar.xz | ec09c90a1cfd2c0630321d366a5e7203 | dunst
+036 | libXt-1.3.1 | https://www.x.org/pub/individual/lib/libXt-1.3.1.tar.xz | 9acd189c68750b5028cf120e53c68009 | xterm/xclip
+037 | libXmu-1.3.1 | https://www.x.org/pub/individual/lib/libXmu-1.3.1.tar.xz | 1ef8065f0284e76c2238770365012ab2 | xclip
+038 | libXpm-3.5.18 | https://www.x.org/pub/individual/lib/libXpm-3.5.18.tar.xz | d22b838e42ac0229ddf5a3afaf23910c | Xorg libs
+039 | libXaw-1.0.16 | https://www.x.org/pub/individual/lib/libXaw-1.0.16.tar.xz | 2a9793533224f92ddad256492265dd82 | Xorg libs
+040 | libXfixes-6.0.2 | https://www.x.org/pub/individual/lib/libXfixes-6.0.2.tar.xz | baa39ada682dd524491a165bb0dfc708 | scrot/picom
+041 | libXcomposite-0.4.7 | https://www.x.org/pub/individual/lib/libXcomposite-0.4.7.tar.xz | 132816d5efccb883bbc2bf45eb905770 | scrot
+042 | libXrender-0.9.12 | https://www.x.org/pub/individual/lib/libXrender-0.9.12.tar.xz | 4c54dce455d96e3bdee90823b0869f89 | cairo/feh
+043 | libXcursor-1.2.3 | https://www.x.org/pub/individual/lib/libXcursor-1.2.3.tar.xz | 5ce55e952ec2d84d9817169d5fdb7865 | Xorg libs
+044 | libXdamage-1.1.7 | https://www.x.org/pub/individual/lib/libXdamage-1.1.7.tar.xz | 72bb73f2a07f81784ad69a39d7df1da2 | Xorg libs
+045 | libfontenc-1.1.9 | https://www.x.org/pub/individual/lib/libfontenc-1.1.9.tar.xz | 3cba344d6b351cf308114865afa0d91e | Xorg libs
+046 | libXfont2-2.0.7 | https://www.x.org/pub/individual/lib/libXfont2-2.0.7.tar.xz | 66e03e3405d923dfaf319d6f2b47e3da | xorg-server
+047 | libXft-2.3.9 | https://www.x.org/pub/individual/lib/libXft-2.3.9.tar.xz | d378be0fcbd1f689f9a132e0d642bc4b | xterm/feh
+048 | libXi-1.8.2 | https://www.x.org/pub/individual/lib/libXi-1.8.2.tar.xz | 95a960c1692a83cc551979f7ffe28cf4 | xdotool/xinput
+049 | libXinerama-1.1.6 | https://www.x.org/pub/individual/lib/libXinerama-1.1.6.tar.xz | 5f3f5754a40730d1518233a60ba5c48e | dunst/scrot
+050 | libXrandr-1.5.5 | https://www.x.org/pub/individual/lib/libXrandr-1.5.5.tar.xz | b550dfa388292a821aecdd52acecc94c | xrandr/dunst
+051 | libXres-1.2.3 | https://www.x.org/pub/individual/lib/libXres-1.2.3.tar.xz | 5014282a08b54ec0edfa73c5cf9ae2c1 | Xorg libs
+052 | libXtst-1.2.5 | https://www.x.org/pub/individual/lib/libXtst-1.2.5.tar.xz | b62dc44d8e63a67bb10230d54c44dcb7 | xdotool
+053 | libXv-1.0.13 | https://www.x.org/pub/individual/lib/libXv-1.0.13.tar.xz | 8a26503185afcb1bbd2c65e43f775a67 | Xorg libs
+054 | libXvMC-1.0.15 | https://www.x.org/pub/individual/lib/libXvMC-1.0.15.tar.xz | de4227c5722a8f5ca5748f3ef524aeee | Xorg libs
+055 | libXxf86dga-1.1.7 | https://www.x.org/pub/individual/lib/libXxf86dga-1.1.7.tar.xz | 543164f1239fbe92cc0a9128d8da88e9 | Xorg libs
+056 | libXxf86vm-1.1.7 | https://www.x.org/pub/individual/lib/libXxf86vm-1.1.7.tar.xz | bea9e3707fae6c3275769e771006fa0f | Xorg libs
+057 | libpciaccess-0.18.1 | https://www.x.org/pub/individual/lib/libpciaccess-0.18.1.tar.xz | 57c7efbeceedefde006123a77a7bc825 | xorg-server
+058 | libxkbfile-1.2.0 | https://www.x.org/pub/individual/lib/libxkbfile-1.2.0.tar.xz | fa0faa5b6a8e726186c535d73712ccea | xkbcomp/server
+059 | libxshmfence-1.3.3 | https://www.x.org/pub/individual/lib/libxshmfence-1.3.3.tar.xz | 9805be7e18f858bed9938542ed2905dc | xorg-server
+060 | libXpresent-1.0.2 | https://www.x.org/pub/individual/lib/libXpresent-1.0.2.tar.xz | 53b72ce969745f8d3e41175d6549ce0b | Xorg libs
+061 | libxcvt-0.1.3 | https://www.x.org/pub/individual/lib/libxcvt-0.1.3.tar.xz | 7fb9c51d33a680f724f34da41768b1d0 | xorg-server
+062 | xcb-util-0.4.1 | https://xcb.freedesktop.org/dist/xcb-util-0.4.1.tar.xz | 34d749eab0fd0ffd519ac64798d79847 | rofi/startup-notification
+063 | xcb-util-image-0.4.1 | https://xorg.freedesktop.org/archive/individual/lib/xcb-util-image-0.4.1.tar.xz | a67bfac2eff696170259ef1f5ce1b611 | picom
+064 | xcb-util-keysyms-0.4.1 | https://xorg.freedesktop.org/archive/individual/lib/xcb-util-keysyms-0.4.1.tar.xz | fbdc05f86f72f287ed71b162f1a9725a | i3/rofi
+065 | xcb-util-renderutil-0.3.10 | https://xorg.freedesktop.org/archive/individual/lib/xcb-util-renderutil-0.3.10.tar.xz | 193b890e2a89a53c31e2ece3afcbd55f | picom
+066 | xcb-util-wm-0.4.2 | https://xorg.freedesktop.org/archive/individual/lib/xcb-util-wm-0.4.2.tar.xz | 581b3a092e3c0c1b4de6416d90b969c3 | i3/rofi
+067 | xcb-util-cursor-0.1.6 | https://xorg.freedesktop.org/archive/individual/lib/xcb-util-cursor-0.1.6.tar.xz | e85bccd1993992be07232f8b80a814c8 | i3/rofi
+068 | xcb-util-xrm-1.3 | https://github.com/Airblader/xcb-util-xrm/releases/download/v1.3/xcb-util-xrm-1.3.tar.bz2 | - | i3; use release tarball
+069 | xbitmaps-1.1.3 | https://www.x.org/pub/individual/data/xbitmaps-1.1.3.tar.xz | 2b03f89d78fb91671370e77d7ad46907 | Xorg apps
+070 | iceauth-1.0.10 | https://www.x.org/pub/individual/app/iceauth-1.0.10.tar.xz | 30f898d71a7d8e817302970f1976198c | Xorg apps
+071 | mkfontscale-1.2.3 | https://www.x.org/pub/individual/app/mkfontscale-1.2.3.tar.xz | 7dcf5f702781bdd4aaff02e963a56270 | Xorg fonts
+072 | sessreg-1.1.4 | https://www.x.org/pub/individual/app/sessreg-1.1.4.tar.xz | b9efe1d21615c474b22439d41981beef | Xorg apps
+073 | setxkbmap-1.3.4 | https://www.x.org/pub/individual/app/setxkbmap-1.3.4.tar.xz | 1d61c9f4a3d1486eff575bf233e5776c | TARGET
+074 | smproxy-1.0.8 | https://www.x.org/pub/individual/app/smproxy-1.0.8.tar.xz | 6484cd8ee30354aaaf8f490988f5f6ef | Xorg apps
+075 | xauth-1.1.5 | https://www.x.org/pub/individual/app/xauth-1.1.5.tar.xz | 9cfdec89ad7bd86bcdfda150ae995955 | TARGET
+076 | xcmsdb-1.0.7 | https://www.x.org/pub/individual/app/xcmsdb-1.0.7.tar.xz | 37063ccf902fe3d55a90f387ed62fe1f | Xorg apps
+077 | xcursorgen-1.0.9 | https://www.x.org/pub/individual/app/xcursorgen-1.0.9.tar.xz | f97e81b2c063f6ae9b18d4b4be7543f6 | xcursor-themes
+078 | xdpyinfo-1.4.0 | https://www.x.org/pub/individual/app/xdpyinfo-1.4.0.tar.xz | 700556957773d378fa16a65a4406be0a | Xorg apps
+079 | xev-1.2.6 | https://www.x.org/pub/individual/app/xev-1.2.6.tar.xz | f29d1544f8dd126a1b85e2f7f728672d | Xorg apps
+080 | xgamma-1.0.8 | https://www.x.org/pub/individual/app/xgamma-1.0.8.tar.xz | 687e42aa5afaec37f14da3072651c635 | Xorg apps
+081 | xhost-1.0.10 | https://www.x.org/pub/individual/app/xhost-1.0.10.tar.xz | 45c7e956941194e5f06a9c7307f5f971 | Xorg apps
+082 | xinput-1.6.4 | https://www.x.org/pub/individual/app/xinput-1.6.4.tar.xz | 8e4d14823b7cbefe1581c398c6ab0035 | Xorg apps
+083 | xkbcomp-1.5.0 | https://www.x.org/pub/individual/app/xkbcomp-1.5.0.tar.xz | b8128ff6816897bd385ca437cd2886ee | xorg-server runtime
+084 | xkbevd-1.1.6 | https://www.x.org/pub/individual/app/xkbevd-1.1.6.tar.xz | 543c0535367ca30e0b0dbcfa90fefdf9 | Xorg apps
+085 | xkbutils-1.0.6 | https://www.x.org/pub/individual/app/xkbutils-1.0.6.tar.xz | 07483ddfe1d83c197df792650583ff20 | Xorg apps
+086 | xkill-1.0.7 | https://www.x.org/pub/individual/app/xkill-1.0.7.tar.xz | 294db9393a9d8e6613e1e3dd4fe0273f | Xorg apps
+087 | xlsatoms-1.1.4 | https://www.x.org/pub/individual/app/xlsatoms-1.1.4.tar.xz | da5b7a39702841281e1d86b7349a03ba | Xorg apps
+088 | xlsclients-1.1.5 | https://www.x.org/pub/individual/app/xlsclients-1.1.5.tar.xz | ab4b3c47e848ba8c3e47c021230ab23a | Xorg apps
+089 | xmessage-1.0.7 | https://www.x.org/pub/individual/app/xmessage-1.0.7.tar.xz | ba2dd3db3361e374fefe2b1c797c46eb | Xorg apps
+090 | xmodmap-1.0.11 | https://www.x.org/pub/individual/app/xmodmap-1.0.11.tar.xz | 0d66e07595ea083871048c4b805d8b13 | Xorg apps
+091 | xpr-1.2.0 | https://www.x.org/pub/individual/app/xpr-1.2.0.tar.xz | ab6c9d17eb1940afcfb80a72319270ae | Xorg apps
+092 | xprop-1.2.8 | https://www.x.org/pub/individual/app/xprop-1.2.8.tar.xz | 5ef4784b406d11bed0fdf07cc6fba16c | Xorg apps
+093 | xrandr-1.5.3 | https://www.x.org/pub/individual/app/xrandr-1.5.3.tar.xz | dc7680201afe6de0966c76d304159bda | TARGET
+094 | xrdb-1.2.2 | https://www.x.org/pub/individual/app/xrdb-1.2.2.tar.xz | c8629d5a0bc878d10ac49e1b290bf453 | Xorg apps
+095 | xrefresh-1.1.0 | https://www.x.org/pub/individual/app/xrefresh-1.1.0.tar.xz | 55003733ef417db8fafce588ca74d584 | Xorg apps
+096 | xset-1.2.5 | https://www.x.org/pub/individual/app/xset-1.2.5.tar.xz | 18ff5cdff59015722431d568a5c0bad2 | Xorg apps
+097 | xsetroot-1.1.3 | https://www.x.org/pub/individual/app/xsetroot-1.1.3.tar.xz | fa9a24fe5b1725c52a4566a62dd0a50d | Xorg apps
+098 | xvinfo-1.1.5 | https://www.x.org/pub/individual/app/xvinfo-1.1.5.tar.xz | d698862e9cad153c5fefca6eee964685 | Xorg apps
+099 | xwd-1.0.9 | https://www.x.org/pub/individual/app/xwd-1.0.9.tar.xz | b0081fb92ae56510958024242ed1bc23 | Xorg apps
+100 | xwininfo-1.1.6 | https://www.x.org/pub/individual/app/xwininfo-1.1.6.tar.xz | c91201bc1eb5e7b38933be8d0f7f16a8 | Xorg apps
+101 | xwud-1.0.7 | https://www.x.org/pub/individual/app/xwud-1.0.7.tar.xz | 3e741db39b58be4fef705e251947993d | Xorg apps
+102 | xcursor-themes-1.0.7 | https://www.x.org/pub/individual/data/xcursor-themes-1.0.7.tar.xz | 070993be1f010b09447ea24bab2c9846 | fonts group
+103 | font-util-1.4.1 | https://www.x.org/pub/individual/font/font-util-1.4.1.tar.xz | a6541d12ceba004c0c1e3df900324642 | xorg-server
+104 | encodings-1.1.0 | https://www.x.org/pub/individual/font/encodings-1.1.0.tar.xz | a56b1a7f2c14173f71f010225fa131f1 | Xorg fonts
+105 | font-alias-1.0.6 | https://www.x.org/pub/individual/font/font-alias-1.0.6.tar.xz | dd1a744b97eb6d388d4e78b17011193e | "fixed" alias
+106 | font-adobe-utopia-type1-1.0.5 | https://www.x.org/pub/individual/font/font-adobe-utopia-type1-1.0.5.tar.xz | 546d17feab30d4e3abcf332b454f58ed | Xorg fonts
+107 | font-bh-ttf-1.0.4 | https://www.x.org/pub/individual/font/font-bh-ttf-1.0.4.tar.xz | 063bfa1456c8a68208bf96a33f472bb1 | Xorg fonts
+108 | font-bh-type1-1.0.4 | https://www.x.org/pub/individual/font/font-bh-type1-1.0.4.tar.xz | 51a17c981275439b85e15430a3d711ee | Xorg fonts
+109 | font-ibm-type1-1.0.4 | https://www.x.org/pub/individual/font/font-ibm-type1-1.0.4.tar.xz | 00f64a84b6c9886040241e081347a853 | Xorg fonts
+110 | font-misc-ethiopic-1.0.5 | https://www.x.org/pub/individual/font/font-misc-ethiopic-1.0.5.tar.xz | fe972eaf13176fa9aa7e74a12ecc801a | Xorg fonts
+111 | font-xfree86-type1-1.0.5 | https://www.x.org/pub/individual/font/font-xfree86-type1-1.0.5.tar.xz | 3b47fed2c032af3a32aad9acc1d25150 | Xorg fonts
+112 | xkeyboard-config-2.46 | https://www.x.org/pub/individual/data/xkeyboard-config/xkeyboard-config-2.46.tar.xz | ca851f0e5bc0f52f2fb4629babc344c1 | TARGET
+113 | libxkbcommon-1.13.1 | https://github.com/lfs-book/libxkbcommon/archive/v1.13.1/libxkbcommon-1.13.1.tar.gz | 11b7276e2be65943765ec05d9f19fee4 | i3/rofi (needs -x11)
+114 | libdrm-2.4.131 | https://dri.freedesktop.org/libdrm/libdrm-2.4.131.tar.xz | 522482dbbded0b314d868ff70e72c1eb | modesetting driver
+115 | xorg-server-21.1.21 | https://www.x.org/pub/individual/xserver/xorg-server-21.1.21.tar.xz | 95c0a1c7869eebcd1ad6176f2cc9094e | TIER1: -D glamor=false -D xkb_output_dir=/var/lib/xkb
+116 | libevdev-1.13.6 | https://www.freedesktop.org/software/libevdev/libevdev-1.13.6.tar.xz | 4202ff132e3efe95fe9ca2c4f8f119f7 | TARGET; kernel INPUT_EVDEV
+117 | mtdev-1.1.7 | https://bitmath.org/code/mtdev/mtdev-1.1.7.tar.bz2 | 483ed7fdf7c1e7b7375c05a62848cce7 | libinput
+118 | libinput-1.31.0 | https://gitlab.freedesktop.org/libinput/libinput/-/archive/1.31.0/libinput-1.31.0.tar.gz | e7ab3c744fa3092d31a3c4eb03c15ea1 | TARGET
+119 | xf86-input-libinput-1.5.0 | https://www.x.org/pub/individual/driver/xf86-input-libinput-1.5.0.tar.xz | f8d0fb6987d843e688d597c2b66ec824 | TARGET
+120 | xinit-1.4.4 | https://www.x.org/pub/individual/app/xinit-1.4.4.tar.xz | e7430a710261c9129b1280f26cb159a5 | startx; --with-xinitdir=/etc/X11/app-defaults
+121 | cairo-1.18.4 | https://www.cairographics.org/releases/cairo-1.18.4.tar.xz | db575fb41bbda127e0147e401f36f8ac | after Xorg libs (xcb surfaces for rofi)
+122 | pango-1.57.0 | https://download.gnome.org/sources/pango/1.57/pango-1.57.0.tar.xz | c027445c1325603a2a11df2fd868e6b8 | i3/rofi/dunst
+123 | startup-notification-0.12 | https://www.freedesktop.org/software/startup-notification/releases/startup-notification-0.12.tar.gz | 2cd77326d4dcaed9a5a23a1232fb38e9 | i3/rofi
+124 | libnotify-0.8.8 | https://download.gnome.org/sources/libnotify/0.8/libnotify-0.8.8.tar.xz | 35bef24dc1e9a336394556d09345e078 | notify-send
+125 | imlib2-1.12.6 | https://downloads.sourceforge.net/enlightenment/imlib2-1.12.6.tar.xz | 8c66b4dabc52225562324be5a994accf | feh/scrot
+126 | dejavu-fonts-ttf-2.37 | https://downloads.sourceforge.net/dejavu/dejavu-fonts-ttf-2.37.tar.bz2 | - | TARGET font
+127 | noto-color-emoji-2.051 | https://github.com/googlefonts/noto-emoji/raw/v2.051/fonts/NotoColorEmoji.ttf | - | single ttf → /usr/share/fonts/noto
+128 | luit-20250912 | https://invisible-mirror.net/archives/luit/luit-20250912.tgz | d03e636d2f919bb21e77aec16a53247d | xterm
+129 | xterm-407 | https://invisible-mirror.net/archives/xterm/xterm-407.tgz | 587fc7e8c30e2665e6dec8f685279ac2 | TARGET
+130 | yajl-2.1.0 | https://github.com/lloyd/yajl/archive/2.1.0/yajl-2.1.0.tar.gz | - | i3; cmake
+131 | libev-4.33 | http://dist.schmorp.de/libev/Attic/libev-4.33.tar.gz | - | i3/picom
+132 | i3-4.25.1 | https://i3wm.org/downloads/i3-4.25.1.tar.xz | - | TARGET; meson
+133 | i3blocks-1.5 | https://github.com/vivien/i3blocks/archive/1.5/i3blocks-1.5.tar.gz | - | TARGET; autogen.sh first
+134 | jq-1.8.2 | https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-1.8.2.tar.gz | - | TARGET; --with-oniguruma=builtin
+135 | rofi-2.0.0 | https://github.com/davatorium/rofi/releases/download/2.0.0/rofi-2.0.0.tar.xz | - | TARGET; -D wayland=disabled -D imdkit=false
+136 | feh-3.11.3 | https://feh.finalrewind.org/feh-3.11.3.tar.bz2 | 8bb2d7e20b1adb8c80c475282eb4f5a4 | TARGET
+137 | scrot-2.0.0 | https://github.com/resurrecting-open-source-projects/scrot/releases/download/2.0.0/scrot-2.0.0.tar.gz | - | TARGET
+138 | xclip-0.13 | https://github.com/astrand/xclip/archive/0.13/xclip-0.13.tar.gz | - | TARGET; autoreconf -i
+139 | xdotool-4.20251130.1 | https://github.com/jordansissel/xdotool/releases/download/v4.20251130.1/xdotool-4.20251130.1.tar.gz | 3b12dfb29de5138f48fbb0ab5017313e | TARGET
+140 | dunst-1.13.2 | https://github.com/dunst-project/dunst/archive/v1.13.2/dunst-1.13.2.tar.gz | - | TARGET; make WAYLAND=0
+141 | libconfig-1.8.2 | https://github.com/hyperrealm/libconfig/archive/v1.8.2/libconfig-1.8.2.tar.gz | - | picom
+142 | uthash-2.4.0 | https://github.com/troydhanson/uthash/archive/v2.4.0/uthash-2.4.0.tar.gz | - | picom (headers only)
+143 | picom-13 | https://github.com/yshui/picom/archive/v13/picom-13.tar.gz | - | TARGET; TIER1 -D opengl=false
+144 | keyd-2.6.0 | https://github.com/rvaiya/keyd/archive/v2.6.0/keyd-2.6.0.tar.gz | - | TARGET; kernel INPUT_UINPUT; group keyd; enable keyd
+145 | polkit-127 | https://github.com/polkit-org/polkit/archive/127/polkit-127.tar.gz | 2cc95f1b02fc1de6c9e52db986642ec4 | polkitd user/group 27; pkttyagent until tier2
+146 | pipewire-1.6.0 | https://gitlab.freedesktop.org/pipewire/pipewire/-/archive/1.6.0/pipewire-1.6.0.tar.bz2 | 97934b344b5517d6f83c6bc1314833e0 | TARGET; enable --global pipewire.socket pipewire-pulse.socket
+147 | wireplumber-0.5.13 | https://gitlab.freedesktop.org/pipewire/wireplumber/-/archive/0.5.13/wireplumber-0.5.13.tar.bz2 | 87b398bafdaebf425e6ef0e4c26ffcf1 | TARGET; -D system-lua=true; enable --global wireplumber
+148 | pulseaudio-17.0 | https://www.freedesktop.org/software/pulseaudio/releases/pulseaudio-17.0.tar.xz | c4a3596a26ff4b9dcd0c394dd1d4f8ee | pactl only; do NOT enable daemon
+149 | playerctl-2.4.1 | https://github.com/altdesktop/playerctl/archive/v2.4.1/playerctl-2.4.1.tar.gz | - | TARGET; meson -D gtk-doc=false
+
+# TIER 2 (Mesa/LLVM chain — before Gate D / for GL + GTK-3 + polkit-gnome)
+T01 | mako-1.3.10 | https://files.pythonhosted.org/packages/source/M/Mako/mako-1.3.10.tar.gz | c9dfb2bf42827459dd505c60f2262a7c | Mesa
+T02 | pyyaml-6.0.3 | https://files.pythonhosted.org/packages/source/P/PyYAML/pyyaml-6.0.3.tar.gz | dbc6f815cd75160ccf12e470be1c8d6e | Mesa
+T03 | llvm-21.1.8 | https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.8/llvm-21.1.8.src.tar.xz | a45a3d91b0b178759b5ee86be81e1ca1 | + llvm-cmake + llvm-third-party from anduin
+T04 | mesa-25.3.5 | https://mesa.freedesktop.org/archive/mesa-25.3.5.tar.xz | 8e699baecbb0a15b5651cc0db2035a4c | virgl+llvmpipe for QEMU; radeonsi/iris for hw
+T05 | libepoxy-1.5.10 | https://download.gnome.org/sources/libepoxy/1.5/libepoxy-1.5.10.tar.xz | 10c635557904aed5239a4885a7c4efb7 | glamor/GTK-3
+T06 | xorg-server-21.1.21-REBUILD | same-as-115 | 95c0a1c7869eebcd1ad6176f2cc9094e | glamor=true
+T07 | xdriinfo-1.0.8 | https://www.x.org/pub/individual/app/xdriinfo-1.0.8.tar.xz | 830a54ef3ba338013e06a1b5b012b4bd | deferred Xorg app
+T08 | gsettings-desktop-schemas-49.1 | https://download.gnome.org/sources/gsettings-desktop-schemas/49/gsettings-desktop-schemas-49.1.tar.xz | - | md5 to fetch from book page
+T09 | at-spi2-core-2.58.3 | https://download.gnome.org/sources/at-spi2-core/2.58/at-spi2-core-2.58.3.tar.xz | c47de3dd660898276f1098ad1fee1bd2 | GTK-3
+T10 | hicolor-icon-theme-0.18 | https://icon-theme.freedesktop.org/releases/hicolor-icon-theme-0.18.tar.xz | - | GTK-3
+T11 | gtk+-3.24.51 | https://download.gnome.org/sources/gtk/3.24/gtk-3.24.51.tar.xz | 072b047c25dbd0c383db283fecad98b1 | -D wayland_backend=false
+T12 | accountsservice-23.13.9 | https://www.freedesktop.org/software/accountsservice/accountsservice-23.13.9.tar.xz | 03dccfe1b306b7ca19743e86d118e64d | polkit-gnome dep; -D vapi=false
+T13 | polkit-gnome-0.105 | https://download.gnome.org/sources/polkit-gnome/0.105/polkit-gnome-0.105.tar.xz | 50ecad37c8342fb4a52f590db7530621 | TARGET auth agent
+T14 | picom-13-REBUILD | same-as-143 | - | opengl backend
+
+# KERNEL ADDITIONS (rebuild): INPUT_UINPUT=y (keyd), SND=y + SND_HDA_INTEL=y +
+# SND_VIRTIO=y, DRM_SIMPLEDRM=y. Already enabled: INPUT_EVDEV, DRM, DRM_VIRTIO_GPU.
+# USERS/GROUPS: polkitd (27), keyd group; add felix to audio,video,input.

@@ -1,0 +1,4 @@
+# staged copies of the private config repo's machine.env (never commit
+# instance values into the blueprint)
+build/gated/machine.env
+machine.env

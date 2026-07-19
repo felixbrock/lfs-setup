@@ -1,0 +1,14 @@
+https://ftp.osuosl.org/pub/rpm/popt/releases/popt-1.x/popt-1.19.tar.gz
+https://github.com/rhboot/efivar/archive/39/efivar-39.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/13.0/efivar-39-upstream_fixes-1.patch
+https://github.com/rhboot/efibootmgr/archive/18/efibootmgr-18.tar.gz
+https://github.com/dosfstools/dosfstools/releases/download/v4.2/dosfstools-4.2.tar.gz
+https://github.com/libusb/libusb/releases/download/v1.0.29/libusb-1.0.29.tar.bz2
+https://github.com/vcrhonek/hwdata/archive/v0.404/hwdata-0.404.tar.gz
+https://kernel.org/pub/linux/utils/usb/usbutils/usbutils-019.tar.xz
+https://github.com/heftig/rtkit/archive/v0.13/rtkit-0.13.tar.gz
+https://github.com/DanBloomberg/leptonica/releases/download/1.85.0/leptonica-1.85.0.tar.gz
+https://github.com/tesseract-ocr/tesseract/archive/5.5.1/tesseract-5.5.1.tar.gz
+https://github.com/tesseract-ocr/tessdata_fast/raw/main/eng.traineddata
+https://github.com/tesseract-ocr/tessdata_fast/raw/main/deu.traineddata
+https://github.com/libfuse/libfuse/releases/download/fuse-2.9.9/fuse-2.9.9.tar.gz

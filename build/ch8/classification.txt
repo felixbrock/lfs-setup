@@ -1,0 +1,1000 @@
+
+########## man-pages.html ##########
+[0] ctx: …k space: 54 MB 8.3.1. Installation of Man-pages Remove two man pages for password hashing functions. Libxcrypt will provide a better version of these man pages:
+    cmd(2L): kbd class=
+[1] ctx: …Install Man-pages by running:
+    cmd(2L): kbd class=
+
+########## iana-etc.html ##########
+[0] ctx: …proximate build time: less than 0.1 SBU Required disk space: 4.8 MB 8.4.1. Installation of Iana-Etc For this package, we only need to copy the files into place:
+    cmd(2L): kbd class=
+
+########## glibc.html ##########
+[0] ctx: …ompliant /var/db directory to store their runtime data. Apply the following patch to make such programs store their runtime data in the FHS-compliant locations:
+    cmd(2L): kbd class=
+[1] ctx: …The Glibc documentation recommends building Glibc in a dedicated build directory:
+    cmd(2L): kbd class="command">mkdir -v build
+[2] ctx: …Ensure that the ldconfig and sln utilities will be installed into /usr/sbin:
+    cmd(2L): kbd class=
+[3] ctx: …Prepare Glibc for compilation:
+    cmd(7L): kbd class=
+[4] ctx: … which is no longer used. libc_cv_slibdir=/usr/lib This variable sets the correct library for all systems. We do not want lib64 to be used. Compile the package:
+    cmd(1L): kbd class="command">make
+[5] ctx: …ibc is considered critical. Do not skip it under any circumstance. Generally a few tests do not pass. The test failures listed below are usually safe to ignore.
+    cmd(1L): kbd class="command">make check
+[6] ctx: …to a timeout (especially when the system is relatively slow and/or running the test suite with multiple parallel make jobs). These tests can be identified with:
+    cmd(2L): kbd class=
+[7] ctx: …t-arc4random-thread). Though it is a harmless message, the install stage of Glibc will complain about the absence of /etc/ld.so.conf. Prevent this warning with:
+    cmd(2L): kbd class=
+[8] ctx: …Fix the Makefile to skip an outdated sanity check that fails with a modern Glibc configuration:
+    cmd(2L): kbd class=
+[9] ctx: …all libcrypt.so.1* (replacing libcrypt.so.1 from the prior Glibc installation). If upgrading on a LFS system prior to 12.1 (exclusive), remove the nscd program:
+    cmd(2L): kbd class=
+[10] ctx: …If this system (prior to LFS 12.1, exclusive) is based on Systemd, it's also needed to disable and stop the nscd service now:
+    cmd(2L): kbd class=
+[11] ctx: …” (but removing $LFS from the cp command). Perform a DESTDIR installation and upgrade the Glibc shared libraries on the system using one single install command:
+    cmd(3L): kbd class=
+[12] ctx: …e GCC was not built with the --disable-fixincludes option, move two GCC headers into a better location and remove the stale “fixed” copies of the Glibc headers:
+    cmd(6L): kbd class=
+[13] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[14] ctx: …Fix a hardcoded path to the executable loader in the ldd script:
+    cmd(2L): kbd class=
+[15] ctx: …sult to the /usr/lib/locale/locale-archive file. The following instructions will install the minimum set of locales necessary for the optimal coverage of tests:
+    cmd(35L): kbd class=
+[16] ctx: …ales listed in the glibc-2.43/localedata/SUPPORTED file (it includes every locale listed above and many more) at once with the following time-consuming command:
+    cmd(2L): kbd class=
+[17] ctx: … file needs to be created because the Glibc defaults do not work well in a networked environment. Create a new file /etc/nsswitch.conf by running the following:
+    cmd(18L): kbd class=
+[18] ctx: …8.5.2.2. Adding Time Zone Data Install and set up the time zone data with the following:
+    cmd(16L): kbd class=
+[19] ctx: …ecause POSIX requires the daylight saving time rules to be in accordance with US rules. One way to determine the local time zone is to run the following script:
+    cmd(1L): kbd class="command">tzselect
+[20] ctx: … in /usr/share/zoneinfo such as Canada/Eastern or EST5EDT that are not identified by the script but can be used. Then create the /etc/localtime file by running:
+    cmd(2L): kbd class=
+[21] ctx: …aries are /usr/local/lib and /opt/lib, so add those directories to the dynamic loader's search path. Create a new file /etc/ld.so.conf by running the following:
+    cmd(7L): kbd class=
+[22] ctx: … found there. Generally the files in this include directory are one line specifying the desired library path. To add this capability run the following commands:
+    cmd(7L): kbd class=
+
+########## zlib.html ##########
+[0] ctx: … routines used by some programs. Approximate build time: less than 0.1 SBU Required disk space: 6.4 MB 8.6.1. Installation of Zlib Prepare Zlib for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[4] ctx: …Remove a useless static library:
+    cmd(2L): kbd class=
+
+########## bzip2.html ##########
+[0] ctx: …imate build time: less than 0.1 SBU Required disk space: 7.3 MB 8.7.1. Installation of Bzip2 Apply a patch that will install the documentation for this package:
+    cmd(2L): kbd class=
+[1] ctx: …The following command ensures installation of symbolic links are relative:
+    cmd(2L): kbd class=
+[2] ctx: …Ensure the man pages are installed into the correct location:
+    cmd(2L): kbd class=
+[3] ctx: …Prepare Bzip2 for compilation with:
+    cmd(3L): kbd class=
+[4] ctx: …ile, in this case the Makefile-libbz2_so file, which creates a dynamic libbz2.so library and links the Bzip2 utilities against it. Compile and test the package:
+    cmd(1L): kbd class="command">make
+[5] ctx: …Install the programs:
+    cmd(2L): kbd class=
+[6] ctx: …Install the shared library:
+    cmd(3L): kbd class=
+[7] ctx: …so.1.0, but some applications, for example Kbd, expects a different name libbz2.so.1 that some other distros are using. Create a compatibility symlink for them:
+    cmd(2L): kbd class=
+[8] ctx: …1, “Upgrade Issues” for details about library names. Install the shared bzip2 binary into the /usr/bin directory, and replace two copies of bzip2 with symlinks:
+    cmd(5L): kbd class=
+[9] ctx: …Remove a useless static library:
+    cmd(2L): kbd class=
+
+########## xz.html ##########
+[0] ctx: …th the traditional gzip or bzip2 commands. Approximate build time: 0.1 SBU Required disk space: 24 MB 8.8.1. Installation of Xz Prepare Xz for compilation with:
+    cmd(4L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## lz4.html ##########
+[0] ctx: …rd to allow both algorithms to compress data faster. Approximate build time: 0.1 SBU Required disk space: 4.2 MB 8.9.1. Installation of Lz4 Compile the package:
+    cmd(2L): kbd class=
+[1] ctx: …To test the results, issue:
+    cmd(2L): kbd class=
+[2] ctx: …Install the package:
+    cmd(2L): kbd class=
+
+########## zstd.html ##########
+[0] ctx: …de-offs, while being backed by a very fast decoder. Approximate build time: 0.4 SBU Required disk space: 86 MB 8.10.1. Installation of Zstd Compile the package:
+    cmd(2L): kbd class=
+[1] ctx: …veral places that indicate 'failed'. These are expected and only 'FAIL' is an actual test failure. There should be no test failures. To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[2] ctx: …Install the package:
+    cmd(2L): kbd class=
+[3] ctx: …Remove the static library:
+    cmd(2L): kbd class=
+
+########## file.html ##########
+[0] ctx: …e type of a given file or files. Approximate build time: less than 0.1 SBU Required disk space: 19 MB 8.11.1. Installation of File Prepare File for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## readline.html ##########
+[0] ctx: …yname>.old. While this is normally not a problem, in some cases it can trigger a linking bug in ldconfig. This can be avoided by issuing the following two seds:
+    cmd(3L): kbd class=
+[1] ctx: …raries. This package does not need rpath for an installation into the standard location, and rpath may sometimes cause unwanted effects or even security issues:
+    cmd(2L): kbd class=
+[2] ctx: …Fix a problem identified upstream specifically for this version of readline:
+    cmd(5L): kbd class="command">sed -e '270a\
+[3] ctx: …Prepare Readline for compilation:
+    cmd(5L): kbd class=
+[4] ctx: … find the termcap library functions in the curses library, not a separate termcap library. This will generate the correct readline.pc file. Compile the package:
+    cmd(2L): kbd class=
+[5] ctx: …cursesw library. For details see the “Shared Libraries” section in the package's README file. This package does not come with a test suite. Install the package:
+    cmd(1L): kbd class="command">make install
+[6] ctx: …If desired, install the documentation:
+    cmd(2L): kbd class=
+
+########## pcre2.html ##########
+[0] ctx: …Compatible Regular Expression libraries. Approximate build time: 0.2 SBU Required disk space: 28 MB 8.13.1. Installation of Pcre2 Prepare pcre2 for compilation:
+    cmd(11L): kbd class=
+[1] ctx: … compressed files to pcre2grep. --enable-pcre2test-libreadline This option adds line editing and history features to the pcre2test program. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## m4.html ##########
+[0] ctx: ….21 The M4 package contains a macro processor. Approximate build time: 0.4 SBU Required disk space: 61 MB 8.14.1. Installation of M4 Prepare M4 for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## bc.html ##########
+[0] ctx: …cision numeric processing language. Approximate build time: less than 0.1 SBU Required disk space: 7.8 MB 8.15.1. Installation of Bc Prepare Bc for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …c program has been installed. -O3 Specify the optimization to use. -r Enable the use of Readline to improve the line editing feature of bc. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test bc, run:
+    cmd(1L): kbd class="command">make test
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## flex.html ##########
+[0] ctx: … programs that recognize patterns in text. Approximate build time: 0.1 SBU Required disk space: 33 MB 8.16.1. Installation of Flex Prepare Flex for compilation:
+    cmd(4L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[4] ctx: …cessor, lex. To support those programs, create a symbolic link named lex that runs flex in lex emulation mode, and also create the man page of lex as a symlink:
+    cmd(3L): kbd class=
+
+########## tcl.html ##########
+[0] ctx: …rposes may seem excessive, but it is very reassuring, if not essential, to know that the most important tools are working properly. Prepare Tcl for compilation:
+    cmd(5L): kbd class="command">SRCDIR=$(pwd)
+[1] ctx: …e does not need rpath for an installation into the standard location, and rpath may sometimes cause unwanted effects or even security issues. Build the package:
+    cmd(18L): kbd class="command">make
+[2] ctx: …hem with the install directory. This is not mandatory for the remainder of LFS, but may be needed if a package built later uses Tcl. To test the results, issue:
+    cmd(2L): kbd class=
+[3] ctx: …Install the package:
+    cmd(2L): kbd class="command">make install 
+[4] ctx: …Make the installed library writable so debugging symbols can be removed later:
+    cmd(2L): kbd class=
+[5] ctx: …Install Tcl's headers. The next package, Expect, requires them.
+    cmd(2L): kbd class=
+[6] ctx: …Now make a necessary symbolic link:
+    cmd(2L): kbd class=
+[7] ctx: …Rename a man page that conflicts with a Perl man page:
+    cmd(2L): kbd class=
+[8] ctx: …Optionally, install the documentation by issuing the following commands:
+    cmd(4L): kbd class="command">cd ..
+
+########## expect.html ##########
+[0] ctx: …B 8.18.1. Installation of Expect Expect needs PTYs to work. Verify that the PTYs are working properly inside the chroot environment by performing a simple test:
+    cmd(2L): kbd class=
+[1] ctx: …ourse Expect itself) will fail catastrophically, and other subtle breakages may also happen. Now, make some changes to allow the package with gcc-15.1 or later:
+    cmd(2L): kbd class=
+[2] ctx: …Prepare Expect for compilation:
+    cmd(7L): kbd class=
+[3] ctx: …e where the tclConfig.sh script is located. --with-tclinclude=/usr/include This explicitly tells Expect where to find Tcl's internal headers. Build the package:
+    cmd(1L): kbd class="command">make
+[4] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make test
+[5] ctx: …Install the package:
+    cmd(2L): kbd class="command">make install
+
+########## dejagnu.html ##########
+[0] ctx: …ild time: less than 0.1 SBU Required disk space: 6.9 MB 8.19.1. Installation of DejaGNU The upstream recommends building DejaGNU in a dedicated build directory:
+    cmd(2L): kbd class="command">mkdir -v build
+[1] ctx: …Prepare DejaGNU for compilation:
+    cmd(4L): kbd class=
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(3L): kbd class="command">make install
+
+########## pkgconf.html ##########
+[0] ctx: …of package installations. Approximate build time: less than 0.1 SBU Required disk space: 5.0 MB 8.20.1. Installation of Pkgconf Prepare Pkgconf for compilation:
+    cmd(4L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[3] ctx: …To maintain compatibility with the original Pkg-config create two symlinks:
+    cmd(3L): kbd class=
+
+########## binutils.html ##########
+[0] ctx: …me: 1.7 SBU Required disk space: 835 MB 8.21.1. Installation of Binutils The Binutils documentation recommends building Binutils in a dedicated build directory:
+    cmd(2L): kbd class="command">mkdir -v build
+[1] ctx: …Prepare Binutils for compilation:
+    cmd(11L): kbd class=
+[2] ctx: …-plugins Enables plugin support for the linker. --with-system-zlib Use the installed zlib library instead of building the included version. Compile the package:
+    cmd(2L): kbd class=
+[3] ctx: …ed on PowerPC machines). Important The test suite for Binutils in this section is considered critical. Do not skip it under any circumstances. Test the results:
+    cmd(1L): kbd class="command">make -k check
+[4] ctx: …For a list of failed tests, run:
+    cmd(2L): kbd class=
+[5] ctx: …One test related to gprofng is known to fail. Install the package:
+    cmd(2L): kbd class=
+[6] ctx: …Remove useless static libraries and other files:
+    cmd(3L): kbd class=
+
+########## gmp.html ##########
+[0] ctx: …pecified CFLAGS in the environment, the configure script will attempt to configure for 64-bits and fail. Avoid this by invoking the configure command below with
+    cmd(1L): kbd class="command">ABI=32 ./configure ...
+[1] ctx: …raries can be created by appending the --host=none-linux-gnu option to the configure command. First, make an adjustment for compatibility with gcc-15 and later:
+    cmd(2L): kbd class=
+[2] ctx: …Prepare GMP for compilation:
+    cmd(5L): kbd class=
+[3] ctx: …port --docdir=/usr/share/doc/gmp-6.3.0 This variable specifies the correct place for the documentation. Compile the package and generate the HTML documentation:
+    cmd(2L): kbd class="command">make
+[4] ctx: …Important The test suite for GMP in this section is considered critical. Do not skip it under any circumstances. Test the results:
+    cmd(2L): kbd class=
+[5] ctx: … with the option --host=none-linux-gnu and rebuilt. Ensure that at least 199 tests in the test suite passed. Check the results by issuing the following command:
+    cmd(2L): kbd class=
+[6] ctx: …Install the package and its documentation:
+    cmd(2L): kbd class="command">make install
+
+########## mpfr.html ##########
+[0] ctx: …ins functions for multiple precision math. Approximate build time: 0.2 SBU Required disk space: 43 MB 8.23.1. Installation of MPFR Prepare MPFR for compilation:
+    cmd(5L): kbd class=
+[1] ctx: …Compile the package and generate the HTML documentation:
+    cmd(2L): kbd class="command">make
+[2] ctx: …t The test suite for MPFR in this section is considered critical. Do not skip it under any circumstances. Test the results and ensure that all 198 tests passed:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package and its documentation:
+    cmd(2L): kbd class="command">make install
+
+########## mpc.html ##########
+[0] ctx: …recision and correct rounding of the result. Approximate build time: 0.1 SBU Required disk space: 22 MB 8.24.1. Installation of MPC Prepare MPC for compilation:
+    cmd(4L): kbd class=
+[1] ctx: …Compile the package and generate the HTML documentation:
+    cmd(2L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package and its documentation:
+    cmd(2L): kbd class="command">make install
+
+########## attr.html ##########
+[0] ctx: …tributes of filesystem objects. Approximate build time: less than 0.1 SBU Required disk space: 4.1 MB 8.25.1. Installation of Attr Prepare Attr for compilation:
+    cmd(5L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …The tests must be run on a filesystem that supports extended attributes such as the ext2, ext3, or ext4 filesystems. To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## acl.html ##########
+[0] ctx: …rights for files and directories. Approximate build time: less than 0.1 SBU Required disk space: 6.5 MB 8.26.1. Installation of Acl Prepare Acl for compilation:
+    cmd(4L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …The Acl tests must be run on a filesystem that supports access controls. To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …One test named test/cp.test is known to fail because Coreutils is not built with the Acl support yet. Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## libcap.html ##########
+[0] ctx: …using export GOLANG=no before running the commands below. Be sure to unset GOLANG after installation is complete. Prevent static libraries from being installed:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(2L): kbd class=
+[2] ctx: …ake option: lib=lib This parameter sets the library directory to /usr/lib rather than /usr/lib64 on x86_64. It has no effect on x86. To test the results, issue:
+    cmd(1L): kbd class="command">make test
+[3] ctx: …Install the package:
+    cmd(2L): kbd class=
+
+########## libxcrypt.html ##########
+[0] ctx: …g of passwords. Approximate build time: 0.1 SBU Required disk space: 14 MB 8.28.1. Installation of Libxcrypt First, make a fix required by glibc-2.43 and later:
+    cmd(2L): kbd class=
+[1] ctx: …Prepare Libxcrypt for compilation:
+    cmd(6L): kbd class=
+[2] ctx: …e. It's needed for compatibility with the traditional hash libraries of some platforms, but a Linux system based on Glibc does not need it. Compile the package:
+    cmd(1L): kbd class="command">make
+[3] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[4] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[5] ctx: …ion 1. If you must have such functions because of some binary-only application or to be compliant with LSB, build the package again with the following commands:
+    cmd(8L): kbd class="command">make distclean
+
+########## shadow.html ##########
+[0] ctx: … man pages, as Coreutils provides a better version. Also, prevent the installation of manual pages that were already installed in Section 8.3, “Man-pages-6.17”:
+    cmd(5L): kbd class=
+[1] ctx: …usr. Warning Including /bin and/or /sbin in the PATH variable may cause some BLFS packages fail to build, so don't do that in the .bashrc file or anywhere else.
+    cmd(5L): kbd class=
+[2] ctx: …Prepare Shadow for compilation:
+    cmd(7L): kbd class="command">touch /usr/bin/passwd
+[3] ctx: …e before that year. --without-libbsd Do not use the readpassphrase function from libbsd which is not in LFS. Use the internal copy instead. Compile the package:
+    cmd(1L): kbd class="command">make
+[4] ctx: …This package does not come with a test suite. Install the package:
+    cmd(3L): kbd class=
+[5] ctx: …p3 daemons, etc.) must be Shadow-compliant. That is, they must be able to work with shadowed passwords. To enable shadowed passwords, run the following command:
+    cmd(1L): kbd class="command">pwconv
+[6] ctx: …To enable shadowed group passwords, run:
+    cmd(1L): kbd class="command">grpconv
+[7] ctx: …information. Second, to change the default parameters, the file /etc/default/useradd must be created and tailored to suit your particular needs. Create it with:
+    cmd(2L): kbd class="command">mkdir -p /etc/default
+[8] ctx: …d will assign the group ownership of this file to the mail group with 0660 permissions. If you would rather not create these files, issue the following command:
+    cmd(2L): kbd class=
+[9] ctx: …8.29.3. Setting the Root Password Choose a password for user root and set it by running:
+    cmd(1L): kbd class="command">passwd root
+
+########## gcc.html ##########
+[0] ctx: …mpilers. Approximate build time: 45 SBU (with tests) Required disk space: 6.6 GB 8.30.1. Installation of GCC First, make a fix required by glibc-2.43 and later:
+    cmd(2L): kbd class=
+[1] ctx: …If building on x86_64, change the default directory name for 64-bit libraries to “lib”:
+    cmd(6L): kbd class="command">case $(uname -m) in
+[2] ctx: …The GCC documentation recommends building GCC in a dedicated build directory:
+    cmd(2L): kbd class="command">mkdir -v build
+[3] ctx: …Prepare GCC for compilation:
+    cmd(11L): kbd class=
+[4] ctx: …utine, thus transferring control to some dangerous code (existing in the program or shared libraries, or injected by the attacker somehow). Compile the package:
+    cmd(1L): kbd class="command">make
+[5] ctx: …ecessary to change the stack size soft limit because GCC will automatically set it to an appropriate value, as long as the value does not exceed the hard limit:
+    cmd(2L): kbd class=
+[6] ctx: …Now remove several known test failures:
+    cmd(2L): kbd class=
+[7] ctx: …Test the results as a non-privileged user, but do not stop at errors:
+    cmd(2L): kbd class="command">chown -R tester .
+[8] ctx: …To extract a summary of the test suite results, run:
+    cmd(2L): kbd class=
+[9] ctx: …d on the specific hardware of the system. Unless the test results are vastly different from those at the above URL, it is safe to continue. Install the package:
+    cmd(1L): kbd class="command">make install
+[10] ctx: …ory is owned by tester now, and the ownership of the installed header directory (and its content) is incorrect. Change the ownership to the root user and group:
+    cmd(2L): kbd class="command">chown -v -R root:root \
+[11] ctx: …Create a symlink required by the FHS for "historical" reasons.
+    cmd(2L): kbd class=
+[12] ctx: …Many packages use the name cc to call the C compiler. We've already created cc as a symlink in gcc-pass2, create its man page as a symlink as well:
+    cmd(2L): kbd class=
+[13] ctx: …Add a compatibility symlink to enable building programs with Link Time Optimization (LTO):
+    cmd(3L): kbd class=
+[14] ctx: … our final toolchain is in place, it is important to again ensure that compiling and linking will work as expected. We do this by performing some sanity checks:
+    cmd(3L): kbd class=
+[15] ctx: …ences in the dynamic linker name): [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2] Now make sure that we're set up to use the correct start files:
+    cmd(2L): kbd class=
+[16] ctx: … to look for here is that gcc has found all three crt*.o files under the /usr/lib directory. Verify that the compiler is searching for the correct header files:
+    cmd(2L): kbd class=
+[17] ctx: …et triplet may be different than the above, depending on your system architecture. Next, verify that the new linker is being used with the correct search paths:
+    cmd(2L): kbd class=
+[18] ctx: …ARCH_DIR("/usr/i686-pc-linux-gnu/lib") SEARCH_DIR("/usr/local/lib") SEARCH_DIR("/lib") SEARCH_DIR("/usr/lib"); Next make sure that we're using the correct libc:
+    cmd(2L): kbd class=
+[19] ctx: …The output of the last command should be: attempt to open /usr/lib/libc.so.6 succeeded Make sure GCC is using the correct dynamic linker:
+    cmd(2L): kbd class=
+[20] ctx: … the problem is and correct it. Any issues should be resolved before continuing with the process. Once everything is working correctly, clean up the test files:
+    cmd(2L): kbd class=
+[21] ctx: …Finally, move a misplaced file:
+    cmd(3L): kbd class=
+
+########## ncurses.html ##########
+[0] ctx: …ndent handling of character screens. Approximate build time: 0.2 SBU Required disk space: 47 MB 8.31.1. Installation of Ncurses Prepare Ncurses for compilation:
+    cmd(9L): kbd class=
+[1] ctx: …lso prevents it building and installing static C++ bindings. --enable-pc-files This switch generates and installs .pc files for pkg-config. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …move-destination option of cp (the header curses.h is also edited to ensure the wide-character ABI to be used as what we've done in Section 6.3, “Ncurses-6.6”):
+    cmd(5L): kbd class=
+[3] ctx: …to linking with wide-character libraries by means of symlinks (note that the .so links are only safe with curses.h edited to always use the wide-character ABI):
+    cmd(5L): kbd class=
+[4] ctx: …Finally, make sure that old applications that look for -lcurses at build time are still buildable:
+    cmd(2L): kbd class=
+[5] ctx: …If desired, install the Ncurses documentation:
+    cmd(2L): kbd class=
+[6] ctx: …ion 5. If you must have such libraries because of some binary-only application or to be compliant with LSB, build the package again with the following commands:
+    cmd(9L): kbd class="command">make distclean
+
+########## sed.html ##########
+[0] ctx: ….9 The Sed package contains a stream editor. Approximate build time: 0.3 SBU Required disk space: 30 MB 8.32.1. Installation of Sed Prepare Sed for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package and generate the HTML documentation:
+    cmd(2L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(2L): kbd class="command">chown -R tester .
+[3] ctx: …Install the package and its documentation:
+    cmd(3L): kbd class="command">make install
+
+########## psmisc.html ##########
+[0] ctx: …on about running processes. Approximate build time: less than 0.1 SBU Required disk space: 6.7 MB 8.33.1. Installation of Psmisc Prepare Psmisc for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To run the test suite, run:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## gettext.html ##########
+[0] ctx: …ages in the user's native language. Approximate build time: 2.1 SBU Required disk space: 447 MB 8.34.1. Installation of Gettext Prepare Gettext for compilation:
+    cmd(4L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(2L): kbd class="command">make install
+
+########## bison.html ##########
+[0] ctx: …son package contains a parser generator. Approximate build time: 2.1 SBU Required disk space: 63 MB 8.35.1. Installation of Bison Prepare Bison for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## grep.html ##########
+[0] ctx: …ime: 0.5 SBU Required disk space: 48 MB 8.36.1. Installation of Grep First, remove a warning about using egrep and fgrep that makes tests on some packages fail:
+    cmd(2L): kbd class=
+[1] ctx: …Prepare Grep for compilation:
+    cmd(2L): kbd class=
+[2] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[3] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[4] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## bash.html ##########
+[0] ctx: …h package contains the Bourne-Again Shell. Approximate build time: 1.5 SBU Required disk space: 56 MB 8.37.1. Installation of Bash Prepare Bash for compilation:
+    cmd(5L): kbd class=
+[1] ctx: …line This option tells Bash to use the readline library that is already installed on the system rather than using its own readline version. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …Skip down to “Install the package” if not running the test suite. To prepare the tests, ensure that the tester user can write to the sources tree:
+    cmd(2L): kbd class=
+[3] ctx: …er who owns the terminal connected to standard input. To satisfy the requirement, spawn a new pseudo terminal using Expect and run the tests as the tester user:
+    cmd(8L): kbd class=
+[4] ctx: …ines of the output. Some other tests need the zh_TW.BIG5 and ja_JP.SJIS locales, they are known to fail unless those locales are installed. Install the package:
+    cmd(1L): kbd class="command">make install
+[5] ctx: …Run the newly compiled bash program (replacing the one that is currently being executed):
+    cmd(2L): kbd class=
+
+########## libtool.html ##########
+[0] ctx: …th a consistent, portable interface. Approximate build time: 0.6 SBU Required disk space: 44 MB 8.38.1. Installation of Libtool Prepare Libtool for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[4] ctx: …Remove a static library only useful for the test suite:
+    cmd(2L): kbd class=
+
+########## gdbm.html ##########
+[0] ctx: …ey and deleting a key along with its data. Approximate build time: 0.2 SBU Required disk space: 13 MB 8.39.1. Installation of GDBM Prepare GDBM for compilation:
+    cmd(4L): kbd class=
+[1] ctx: …his switch enables building the libgdbm compatibility library. Some packages outside of LFS may require the older DBM routines it provides. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## gperf.html ##########
+[0] ctx: … a perfect hash function from a key set. Approximate build time: 0.2 SBU Required disk space: 12 MB 8.40.1. Installation of Gperf Prepare Gperf for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## expat.html ##########
+[0] ctx: …ream oriented C library for parsing XML. Approximate build time: 0.1 SBU Required disk space: 14 MB 8.41.1. Installation of Expat Prepare Expat for compilation:
+    cmd(4L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[4] ctx: …If desired, install the documentation:
+    cmd(2L): kbd class=
+
+########## inetutils.html ##########
+[0] ctx: …c networking. Approximate build time: 0.3 SBU Required disk space: 38 MB 8.42.1. Installation of Inetutils First, make the package build with gcc-14.1 or later:
+    cmd(2L): kbd class=
+[1] ctx: …Prepare Inetutils for compilation:
+    cmd(11L): kbd class=
+[2] ctx: …insecure by nature and are only considered safe on trusted networks. Note that better replacements are available for many of these servers. Compile the package:
+    cmd(1L): kbd class="command">make
+[3] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[4] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[5] ctx: …Move a program to the proper location:
+    cmd(2L): kbd class=
+
+########## less.html ##########
+[0] ctx: … Less package contains a text file viewer. Approximate build time: 0.1 SBU Required disk space: 17 MB 8.43.1. Installation of Less Prepare Less for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …the configure options: --sysconfdir=/etc This option tells the programs created by the package to look in /etc for the configuration files. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## perl.html ##########
+[0] ctx: …By default Perl will use an internal copy of the sources for the build. Issue the following command so that Perl will use the libraries installed on the system:
+    cmd(2L): kbd class="command">export BUILD_ZLIB=False
+[1] ctx: …following command and hand-pick the way this package is built. Alternatively, use the command exactly as shown below to use the defaults that Perl auto-detects:
+    cmd(15L): kbd class=
+[2] ctx: …, Configure will not create man pages for Perl. These parameters override this behavior. -D usethreads Build Perl with support for threads. Compile the package:
+    cmd(1L): kbd class="command">make
+[3] ctx: …To test the results, issue:
+    cmd(2L): kbd class=
+[4] ctx: …Install the package and clean up:
+    cmd(2L): kbd class="command">make install
+
+########## xml-parser.html ##########
+[0] ctx: …ML parser, Expat. Approximate build time: less than 0.1 SBU Required disk space: 2.3 MB 8.45.1. Installation of XML::Parser Prepare XML::Parser for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make test
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## intltool.html ##########
+[0] ctx: …pproximate build time: less than 0.1 SBU Required disk space: 1.5 MB 8.46.1. Installation of Intltool First fix a warning that is caused by perl-5.22 and later:
+    cmd(2L): kbd class=
+[1] ctx: …l the backslashes. What it does is add a backslash before the right brace character in the sequence '\${' resulting in '\$\{'. Prepare Intltool for compilation:
+    cmd(2L): kbd class=
+[2] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[3] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[4] ctx: …Install the package:
+    cmd(2L): kbd class="command">make install
+
+########## autoconf.html ##########
+[0] ctx: …proximate build time: less than 0.1 SBU (about 0.4 SBU with tests) Required disk space: 25 MB 8.47.1. Installation of Autoconf Prepare Autoconf for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## automake.html ##########
+[0] ctx: …roximate build time: less than 0.1 SBU (about 1.1 SBU with tests) Required disk space: 123 MB 8.48.1. Installation of Automake Prepare Automake for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …Using four parallel jobs speeds up the tests, even on systems with less logical cores, due to internal delays in individual tests. To test the results, issue:
+    cmd(1L): kbd class="command">make -j$(($(nproc)>4?$(nproc):4)) check
+[3] ctx: …Replace $((...)) with the number of logical cores you want to use if you don't want to use all. Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## openssl.html ##########
+[0] ctx: …owsers (for accessing HTTPS sites). Approximate build time: 1.9 SBU Required disk space: 981 MB 8.49.1. Installation of OpenSSL Prepare OpenSSL for compilation:
+    cmd(6L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">HARNESS_JOBS=$(nproc) make test
+[3] ctx: …CRYPTO_AES and CONFIG_CRYPTO_CBC, or CONFIG_CRYPTO_AES_NI_INTEL if the CPU supports AES-NI) enabled. If it fails, it can safely be ignored. Install the package:
+    cmd(3L): kbd class=
+[4] ctx: …Add the version to the documentation directory name, to be consistent with other packages:
+    cmd(2L): kbd class=
+[5] ctx: …If desired, install some additional documentation:
+    cmd(2L): kbd class=
+
+########## libelf.html ##########
+[0] ctx: … Installation of Libelf Libelf is part of the elfutils-0.194 package. Use the elfutils-0.194.tar.bz2 file as the source tarball. Prepare Libelf for compilation:
+    cmd(4L): kbd class=
+[1] ctx: …Compile only Libelf:
+    cmd(2L): kbd class="command">make -C lib
+[2] ctx: …The test suite fails to build with glibc-2.43 or newer. Install only Libelf:
+    cmd(3L): kbd class="command">make -C libelf install
+
+########## libffi.html ##########
+[0] ctx: …ou cannot figure out a value safe for both the CPUs, replace the parameter with --without-gcc-arch to produce a generic library. Prepare Libffi for compilation:
+    cmd(4L): kbd class=
+[1] ctx: …able system, use the less capable system as a parameter. For details about alternative system types, see the x86 options in the GCC manual. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## sqlite.html ##########
+[0] ctx: …uration, transactional SQL database engine. Approximate build time: 0.4 SBU Required disk space: 124 MB 8.52.1. Installation of Sqlite Unpack the documentation:
+    cmd(2L): kbd class=
+[1] ctx: …Prepare Sqlite for compilation with:
+    cmd(8L): kbd class=
+[2] ctx: …lue set by the user) of CFLAGS won't be affected. For further information on what can be specified see https://www.sqlite.org/compile.html. Compile the package:
+    cmd(2L): kbd class=
+[3] ctx: …he standard location, and rpath may sometimes cause unwanted effects or even security issues. This package does not come with a test suite. Install the package:
+    cmd(1L): kbd class="command">make install
+[4] ctx: …If desired, install the documentation:
+    cmd(3L): kbd class=
+
+########## flit-core.html ##########
+[0] ctx: …ging tool for simple Python modules). Approximate build time: less than 0.1 SBU Required disk space: 1.3 MB 8.54.1. Installation of Flit-Core Build the package:
+    cmd(2L): kbd class=
+[1] ctx: …Install the package:
+    cmd(2L): kbd class=
+
+########## packaging.html ##########
+[0] ctx: …uirements. Approximate build time: less than 0.1 SBU Required disk space: 1.6 MB 8.55.1. Installation of Packaging Compile packaging with the following command:
+    cmd(2L): kbd class=
+[1] ctx: …Install packaging with the following command:
+    cmd(2L): kbd class=
+
+########## wheel.html ##########
+[0] ctx: …ackaging standard. Approximate build time: less than 0.1 SBU Required disk space: 708 KB 8.56.1. Installation of Wheel Compile Wheel with the following command:
+    cmd(2L): kbd class=
+[1] ctx: …Install Wheel with the following command:
+    cmd(2L): kbd class=
+
+########## setuptools.html ##########
+[0] ctx: …grade, and uninstall Python packages. Approximate build time: less than 0.1 SBU Required disk space: 22 MB 8.57.1. Installation of Setuptools Build the package:
+    cmd(2L): kbd class=
+[1] ctx: …Install the package:
+    cmd(2L): kbd class=
+
+########## ninja.html ##########
+[0] ctx: …xport NINJAJOBS=4 will limit ninja to four parallel processes. If desired, make ninja recognize the environment variable NINJAJOBS by running the stream editor:
+    cmd(6L): kbd class="command">sed -i '/int Guess/a \
+[1] ctx: …Build Ninja with:
+    cmd(2L): kbd class=
+[2] ctx: …nt. They require cmake. But the basic function of this package is already tested by rebuilding itself (with the --bootstrap option) anyway. Install the package:
+    cmd(4L): kbd class=
+
+########## meson.html ##########
+[0] ctx: …iendly as possible. Approximate build time: less than 0.1 SBU Required disk space: 48 MB 8.59.1. Installation of Meson Compile Meson with the following command:
+    cmd(2L): kbd class=
+[1] ctx: …The test suite requires some packages outside the scope of LFS. Install the package:
+    cmd(4L): kbd class=
+
+########## kmod.html ##########
+[0] ctx: …ties for loading kernel modules Approximate build time: less than 0.1 SBU Required disk space: 6.7 MB 8.60.1. Installation of Kmod Prepare Kmod for compilation:
+    cmd(6L): kbd class="command">mkdir -p build
+[1] ctx: …The meaning of the configure options: -D manpages=false This option disables generating the man pages which requires an external program. Compile the package:
+    cmd(1L): kbd class="command">ninja
+[2] ctx: … of this package requires raw kernel headers (not the “sanitized” kernel headers installed earlier), which are beyond the scope of LFS. Now install the package:
+    cmd(1L): kbd class="command">ninja install
+
+########## coreutils.html ##########
+[0] ctx: …s recognize character boundaries correctly even in multibyte locales. The following patch fixes this non-compliance and other internationalization-related bugs.
+    cmd(2L): kbd class=
+[1] ctx: …rting new bugs to the Coreutils maintainers, please check first to see if those bugs are reproducible without this patch. Now prepare Coreutils for compilation:
+    cmd(4L): kbd class="command">autoreconf -fv
+[2] ctx: …pdates them to prevent a build failure. FORCE_UNSAFE_CONFIGURE=1 This environment variable allows the package to be built by the root user. Compile the package:
+    cmd(1L): kbd class="command">make
+[3] ctx: … down to “Install the package” if not running the test suite. Now the test suite is ready to be run. First, run the tests that are meant to be run as user root:
+    cmd(2L): kbd class=
+[4] ctx: …ests require that the user be a member of more than one group. So that these tests are not skipped, add a temporary group and make the user tester a part of it:
+    cmd(2L): kbd class=
+[5] ctx: …Fix some of the permissions so that the non-root user can compile and run the tests:
+    cmd(2L): kbd class=
+[6] ctx: …creen because the standard input is connected to a PTY from host distro, and the device node for such a PTY cannot be accessed from the LFS chroot environment):
+    cmd(3L): kbd class=
+[7] ctx: …Remove the temporary group:
+    cmd(2L): kbd class=
+[8] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[9] ctx: …Move programs to the locations specified by the FHS:
+    cmd(4L): kbd class=
+
+########## diffutils.html ##########
+[0] ctx: …es between files or directories. Approximate build time: 0.5 SBU Required disk space: 51 MB 8.62.1. Installation of Diffutils Prepare Diffutils for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## gawk.html ##########
+[0] ctx: …ulating text files. Approximate build time: 0.2 SBU Required disk space: 45 MB 8.63.1. Installation of Gawk First, ensure some unneeded files are not installed:
+    cmd(2L): kbd class=
+[1] ctx: …Prepare Gawk for compilation:
+    cmd(2L): kbd class=
+[2] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[3] ctx: …To test the results, issue:
+    cmd(2L): kbd class="command">chown -R tester .
+[4] ctx: …Install the package:
+    cmd(2L): kbd class="command">rm -f /usr/bin/gawk-5.3.2
+[5] ctx: …alled in Section 6.9, “Gawk-5.3.2” is updated here. The installation process already created awk as a symlink to gawk, create its man page as a symlink as well:
+    cmd(2L): kbd class=
+[6] ctx: …If desired, install the documentation:
+    cmd(2L): kbd class=
+
+########## findutils.html ##########
+[0] ctx: … each file selected by a search. Approximate build time: 0.7 SBU Required disk space: 62 MB 8.64.1. Installation of Findutils Prepare Findutils for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …ng of the configure options: --localstatedir This option moves the locate database to /var/lib/locate, which is the FHS-compliant location. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(2L): kbd class="command">chown -R tester .
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## groff.html ##########
+[0] ctx: … size is configured during compilation, it can be overridden later by echoing either “A4” or “letter” to the /etc/papersize file. Prepare Groff for compilation:
+    cmd(1L): kbd class="command">PAGE=<paper_size> ./configure --prefix=/usr
+[1] ctx: …Build the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## grub.html ##########
+[0] ctx: …GRUB for UEFI package without conflict (the BLFS page provides instructions for both cases). Warning Unset any environment variables which may affect the build:
+    cmd(2L): kbd class=
+[1] ctx: …gs. This package is a bootloader. The low-level operations in the source code may be broken by aggressive optimization. First fix a bug introduced in grub-2.14:
+    cmd(2L): kbd class=
+[2] ctx: …Prepare GRUB for compilation:
+    cmd(5L): kbd class=
+[3] ctx: …of Flex. --disable-efiemu This option minimizes what is built by disabling a feature and eliminating some test programs not needed for LFS. Compile the package:
+    cmd(1L): kbd class="command">make
+[4] ctx: …ended. Most of the tests depend on packages that are not available in the limited LFS environment. To run the tests anyway, run make check. Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## gzip.html ##########
+[0] ctx: …s for compressing and decompressing files. Approximate build time: 0.1 SBU Required disk space: 21 MB 8.67.1. Installation of Gzip Prepare Gzip for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## iproute2.html ##########
+[0] ctx: …keley DB, which is not installed in LFS. However, a directory and a man page for arpd will still be installed. Prevent this by running the commands shown below.
+    cmd(2L): kbd class="command">sed -i /ARPD/d Makefile
+[1] ctx: …Compile the package:
+    cmd(2L): kbd class=
+[2] ctx: …This package does not have a working test suite. Install the package:
+    cmd(2L): kbd class=
+[3] ctx: …If desired, install the documentation:
+    cmd(2L): kbd class=
+
+########## kbd.html ##########
+[0] ctx: …bd The behavior of the backspace and delete keys is not consistent across the keymaps in the Kbd package. The following patch fixes this issue for i386 keymaps:
+    cmd(2L): kbd class=
+[1] ctx: …ns program (it requires the defunct svgalib to provide the video mode files - for normal use setfont sizes the console appropriately) together with its manpage.
+    cmd(3L): kbd class=
+[2] ctx: …Prepare Kbd for compilation:
+    cmd(2L): kbd class=
+[3] ctx: …is option prevents the vlock utility from being built because it requires the PAM library, which isn't available in the chroot environment. Compile the package:
+    cmd(1L): kbd class="command">make
+[4] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[5] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[6] ctx: …-5 encoding, and the CP1251 keymap is normally used. Users of such languages have to download working keymaps separately. If desired, install the documentation:
+    cmd(2L): kbd class=
+
+########## libpipeline.html ##########
+[0] ctx: …flexible and convenient way. Approximate build time: 0.1 SBU Required disk space: 10 MB 8.70.1. Installation of Libpipeline Prepare Libpipeline for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …The tests require the Check library that we've removed from LFS. Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## make.html ##########
+[0] ctx: …urce files of a package from source files. Approximate build time: 0.6 SBU Required disk space: 13 MB 8.71.1. Installation of Make Prepare Make for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(2L): kbd class="command">chown -R tester .
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## patch.html ##########
+[0] ctx: …e typically created by the diff program. Approximate build time: 0.1 SBU Required disk space: 14 MB 8.72.1. Installation of Patch Prepare Patch for compilation:
+    cmd(2L): kbd class=
+[1] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## tar.html ##########
+[0] ctx: …ate or list files which were already stored. Approximate build time: 0.6 SBU Required disk space: 43 MB 8.73.1. Installation of Tar Prepare Tar for compilation:
+    cmd(3L): kbd class=
+[1] ctx: …ed dangerous to run this test as the root user, but as it is being run on a system that has only been partially built, overriding it is OK. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …ux, but will be skipped if the host kernel does not support extended attributes or security labels on the filesystem used for building LFS. Install the package:
+    cmd(2L): kbd class="command">make install
+
+########## texinfo.html ##########
+[0] ctx: …roximate build time: 0.3 SBU Required disk space: 160 MB 8.74.1. Installation of Texinfo Fix a code pattern that causes Perl-5.42 or later to display a warning:
+    cmd(2L): kbd class=
+[1] ctx: …Prepare Texinfo for compilation:
+    cmd(2L): kbd class=
+[2] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[3] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[4] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+[5] ctx: …Optionally, install the components belonging in a TeX installation:
+    cmd(2L): kbd class=
+[6] ctx: …th the info pages installed on the system. If the /usr/share/info/dir file ever needs to be recreated, the following optional commands will accomplish the task:
+    cmd(6L): kbd class="command">pushd /usr/share/info
+
+########## vim.html ##########
+[0] ctx: …fs/editors.html for suggested installation instructions. 8.75.1. Installation of Vim First, change the default location of the vimrc configuration file to /etc:
+    cmd(2L): kbd class=
+[1] ctx: …Prepare Vim for compilation:
+    cmd(2L): kbd class=
+[2] ctx: …Compile the package:
+    cmd(1L): kbd class="command">make
+[3] ctx: …To prepare the tests, ensure that user tester can write to the source tree and exclude one file containing tests requiring curl or wget:
+    cmd(2L): kbd class="command">chown -R tester .
+[4] ctx: …Now run the tests as user tester:
+    cmd(3L): kbd class=
+[5] ctx: … DONE in the log file at completion. Two tests, Test_client_server_stopinsert() and Test_popup_setbuf(), are known to fail on some systems. Install the package:
+    cmd(1L): kbd class="command">make install
+[6] ctx: …pe vi instead of vim. To allow execution of vim when users habitually enter vi, create a symlink for both the binary and the man page in the provided languages:
+    cmd(4L): kbd class="command">ln -sv vim /usr/bin/vi
+[7] ctx: …ing symlink allows the documentation to be accessed via /usr/share/doc/vim-9.2.0078, making it consistent with the location of documentation for other packages:
+    cmd(2L): kbd class=
+[8] ctx: …is is necessary because it changes other settings, and overrides must come after this setting. Create a default vim configuration file by running the following:
+    cmd(18L): kbd class=
+[9] ctx: …tter color scheme for use on the black background of these programs. Documentation for other available options can be obtained by running the following command:
+    cmd(2L): kbd class=
+
+########## markupsafe.html ##########
+[0] ctx: … string. Approximate build time: less than 0.1 SBU Required disk space: 692 KB 8.76.1. Installation of MarkupSafe Compile MarkupSafe with the following command:
+    cmd(2L): kbd class=
+[1] ctx: …This package does not come with a test suite. Install the package:
+    cmd(2L): kbd class=
+
+########## jinja2.html ##########
+[0] ctx: …nts a simple pythonic template language. Approximate build time: less than 0.1 SBU Required disk space: 2.7 MB 8.77.1. Installation of Jinja2 Build the package:
+    cmd(2L): kbd class=
+[1] ctx: …Install the package:
+    cmd(2L): kbd class=
+
+########## systemd.html ##########
+[0] ctx: …oximate build time: 1.1 SBU Required disk space: 349 MB 8.78.1. Installation of systemd Remove two unneeded groups, render and sgx, from the default udev rules:
+    cmd(4L): kbd class=
+[1] ctx: …Prepare systemd for compilation:
+    cmd(21L): kbd class="command">mkdir -p build
+[2] ctx: …abled Do not install the systemd-ukify script. At runtime this script requires the pefile Python module that neither LFS nor BLFS provides. Compile the package:
+    cmd(1L): kbd class="command">ninja
+[3] ctx: … suite in a separate mount namespace (so the mount point is only visible for the test suite and it gets cleaned up automatically after the test suite finishes):
+    cmd(3L): kbd class=
+[4] ctx: …-copy may time out due to an I/O congestion with a large parallel job number, but it would pass if running alone with meson test test-copy. Install the package:
+    cmd(1L): kbd class="command">ninja install
+[5] ctx: …Install the man pages:
+    cmd(4L): kbd class=
+[6] ctx: …Create the /etc/machine-id file needed by systemd-journald:
+    cmd(2L): kbd class=
+[7] ctx: …Set up the basic target structure:
+    cmd(2L): kbd class=
+
+########## dbus.html ##########
+[0] ctx: …t going through the message bus daemon). Approximate build time: 0.1 SBU Required disk space: 17 MB 8.79.1. Installation of D-Bus Prepare D-Bus for compilation:
+    cmd(4L): kbd class="command">mkdir build
+[1] ctx: … the meson options: --wrap-mode=nofallback This switch prevents meson from attempting to download a copy of the Glib package for the tests. Compile the package:
+    cmd(1L): kbd class="command">ninja
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">ninja test
+[3] ctx: …uire additional packages that are not included in LFS. Instructions for running the comprehensive test suite can be found in the BLFS book. Install the package:
+    cmd(1L): kbd class="command">ninja install
+[4] ctx: …Create a symlink so that D-Bus and systemd can use the same machine-id file:
+    cmd(2L): kbd class=
+
+########## man-db.html ##########
+[0] ctx: …ams for finding and viewing man pages. Approximate build time: 0.3 SBU Required disk space: 44 MB 8.80.1. Installation of Man-DB Prepare Man-DB for compilation:
+    cmd(9L): kbd class=
+[1] ctx: …g manual pages. They are not part of LFS or BLFS, but you should be able to install them yourself after finishing LFS if you wish to do so. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To test the results, issue:
+    cmd(1L): kbd class="command">make check
+[3] ctx: …Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## procps-ng.html ##########
+[0] ctx: …ograms for monitoring processes. Approximate build time: 0.1 SBU Required disk space: 28 MB 8.81.1. Installation of Procps-ng Prepare Procps-ng for compilation:
+    cmd(7L): kbd class=
+[1] ctx: …e Util-linux package. --enable-watch8bit This switch enables the ncursesw support for the watch command, so it can handle 8-bit characters. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …To run the test suite, run:
+    cmd(2L): kbd class="command">chown -R tester .
+[3] ctx: …med ps with output flag bsdtime,cputime,etime,etimes is known to fail if the host kernel is not built with CONFIG_BSD_PROCESS_ACCT enabled. Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## util-linux.html ##########
+[0] ctx: …es, partitions, and messages. Approximate build time: 0.5 SBU Required disk space: 346 MB 8.82.1. Installation of Util-linux Prepare Util-linux for compilation:
+    cmd(17L): kbd class=
+[1] ctx: … warnings about building components that either require packages not in LFS, or are inconsistent with programs installed by other packages. Compile the package:
+    cmd(1L): kbd class="command">make
+[2] ctx: …nt booting. For complete coverage, other BLFS packages must be installed. If desired, this test can be run by booting into the completed LFS system and running:
+    cmd(2L): kbd class=
+[3] ctx: …
+    cmd(3L): kbd class="command">touch /etc/fstab
+[4] ctx: …supports Supplemental SSE3) enabled. In addition, the lsfd: inotify test will fail if the kernel option CONFIG_NETLINK_DIAG is not enabled. Install the package:
+    cmd(1L): kbd class="command">make install
+
+########## e2fsprogs.html ##########
+[0] ctx: …ired disk space: 100 MB 8.83.1. Installation of E2fsprogs The E2fsprogs documentation recommends that the package be built in a subdirectory of the source tree:
+    cmd(2L): kbd class="command">mkdir -v build
+[1] ctx: …Prepare E2fsprogs for compilation:
+    cmd(8L): kbd class=
+[2] ctx: …ilding and installing the libuuid and libblkid libraries, the uuidd daemon, and the fsck wrapper; util-linux installs more recent versions. Compile the package:
+    cmd(1L): kbd class="command">make
+[3] ctx: …To run the tests, issue:
+    cmd(1L): kbd class="command">make check
+[4] ctx: …orage_prezeroed is known to fail. Another test named m_rootdir_acl is known to fail if the file system used for the LFS system is not ext4. Install the package:
+    cmd(1L): kbd class="command">make install
+[5] ctx: …Remove useless static libraries:
+    cmd(2L): kbd class=
+[6] ctx: …age installs a gzipped .info file but doesn't update the system-wide dir file. Unzip this file and then update the system dir file using the following commands:
+    cmd(3L): kbd class=
+[7] ctx: …If desired, create and install some additional documentation by issuing the following commands:
+    cmd(4L): kbd class=
+[8] ctx: …file system with metadata_csum_seed feature enabled. If you need such a utility, you may remove the feature from the default ext4 feature list with the command:
+    cmd(2L): kbd class=
+
+########## stripping.html ##########
+[0] ctx: …al preference), it may be necessary to update the library file name in save_usrlib or online_usrlib. Failing to do so may render the system completely unusable.
+    cmd(57L): kbd class=
+
+########## cleanup.html ##########
+[0] ctx: …alling Basic System Software Prev Stripping Next System Configuration Up Home 8.86. Cleaning Up Finally, clean up some extra files left over from running tests:
+    cmd(2L): kbd class=
+[1] ctx: …for libltdl. No libraries in LFS are expected to be loaded by libltdl, and it's known that some .la files can break BLFS package builds. Remove those files now:
+    cmd(2L): kbd class=
+[2] ctx: … section "About Libtool Archive (.la) files". The compiler built in Chapter 6 and Chapter 7 is still partially installed and not needed anymore. Remove it with:
+    cmd(2L): kbd class=
+[3] ctx: …Finally, remove the temporary 'tester' user account created at the beginning of the previous chapter.
+    cmd(2L): kbd class=

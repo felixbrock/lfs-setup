@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="agent-lfs — a Linux From Scratch system built and operated by an AI agent">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#101a2c"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#34d399" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#34d399" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="3.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="frame"><rect width="1200" height="300" rx="16"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#frame)" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect width="1200" height="300" fill="url(#bg)"/>
+    <circle cx="185" cy="155" r="170" fill="url(#halo)"/>
+
+    <!-- ground shadow -->
+    <ellipse cx="185" cy="268" rx="95" ry="11" fill="#000000" opacity="0.35"/>
+
+    <!-- feet -->
+    <ellipse cx="148" cy="257" rx="34" ry="13" fill="#e8973a" transform="rotate(-8 148 257)"/>
+    <ellipse cx="222" cy="257" rx="34" ry="13" fill="#e8973a" transform="rotate(8 222 257)"/>
+
+    <!-- flippers -->
+    <ellipse cx="96" cy="180" rx="20" ry="60" fill="#1b2634" transform="rotate(24 96 180)"/>
+    <ellipse cx="274" cy="180" rx="20" ry="60" fill="#1b2634" transform="rotate(-24 274 180)"/>
+
+    <!-- body + head -->
+    <ellipse cx="185" cy="178" rx="82" ry="86" fill="#141d29"/>
+    <circle cx="185" cy="92" r="50" fill="#141d29"/>
+
+    <!-- belly -->
+    <ellipse cx="185" cy="192" rx="57" ry="63" fill="#eef2f6"/>
+    <text x="185" y="204" text-anchor="middle" font-size="26" font-weight="bold" fill="#0f9d6e" opacity="0.9">&gt;_</text>
+
+    <!-- beak -->
+    <path d="M152 106 Q185 134 218 106 Q185 94 152 106" fill="#e8973a"/>
+
+    <!-- visor -->
+    <rect x="131" y="66" width="108" height="36" rx="18" fill="#0a0f16" stroke="#34d399" stroke-opacity="0.65" stroke-width="1.5"/>
+    <rect x="157" y="78" width="15" height="12" rx="3" fill="#34d399" filter="url(#glow)">
+      <animate attributeName="opacity" values="1;0.6;1" dur="3.4s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="198" y="78" width="15" height="12" rx="3" fill="#34d399" filter="url(#glow)">
+      <animate attributeName="opacity" values="1;0.6;1" dur="3.4s" repeatCount="indefinite"/>
+    </rect>
+
+    <!-- antenna -->
+    <line x1="185" y1="42" x2="185" y2="22" stroke="#46536a" stroke-width="3"/>
+    <circle cx="185" cy="17" r="5" fill="#34d399" filter="url(#glow)">
+      <animate attributeName="opacity" values="1;0.25;1" dur="2.2s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- wordmark -->
+    <text x="350" y="150" font-size="84" font-weight="bold">
+      <tspan fill="#e6edf3">agent</tspan><tspan fill="#34d399">-lfs</tspan>
+    </text>
+    <text x="354" y="198" font-size="20" fill="#93a1b3">a Linux From Scratch system built and operated by an AI agent</text>
+
+    <!-- prompt -->
+    <text x="354" y="245" font-size="19">
+      <tspan fill="#64748b">$ </tspan><tspan fill="#e6edf3">claude </tspan><tspan fill="#34d399">/lfs-status</tspan>
+    </text>
+    <rect x="590" y="230" width="10" height="19" fill="#34d399">
+      <animate attributeName="opacity" values="1;0" keyTimes="0;0.5" calcMode="discrete" dur="1.2s" repeatCount="indefinite"/>
+    </rect>
+
+    <!-- edition tag -->
+    <text x="1160" y="42" text-anchor="end" font-size="15" fill="#64748b">LFS 13.0 · systemd</text>
+  </g>
+
+  <rect x="0.5" y="0.5" width="1199" height="299" rx="16" fill="none" stroke="#233045"/>
+</svg>
