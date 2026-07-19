@@ -5,6 +5,15 @@
 A [Linux From Scratch](https://www.linuxfromscratch.org/) (LFS 13.0,
 systemd) system that is built **and operated** by an AI agent.
 
+> ⚠️ **Experimental — use with care.** This is a research and hobby
+> project: an AI agent building and operating a source-built OS. It
+> genuinely daily-drives real hardware, but it is **not a supported
+> product**, has sharp edges, and assumes a human supervising every
+> go/no-go call. Never run it as your only system — always alongside
+> one you keep (see [Requirements](#requirements)). Read the
+> [case studies](#case-studies) before trusting it with anything you
+> care about.
+
 Linux From Scratch normally means compiling an entire Linux system from
 source by hand, following the LFS book step by step. This project goes
 two steps further:
@@ -78,12 +87,79 @@ before it can replace anything:
 - **Your time and judgment.** You are the supervisor: expect go/no-go
   moments and hands-on-hardware steps spread across the build.
 
+### Architecture
+
+The whole operating model on one screen. You (the human) make go/no-go
+calls and provide hardware hands; the agent does everything else,
+working against this repository as the single source of truth,
+watched by a scheduled security sweep, with automatic rollback behind
+every change. Worth a look even if some boxes are unfamiliar — the
+shape is the point.
+
+```mermaid
+flowchart TB
+    OWNER(["Owner (human)<br/>go/no-go on kernel & toolchain,<br/>hardware hands, alert recipient"])
+
+    subgraph FEEDS["External security & release feeds"]
+        direction LR
+        TRACK["Distro security trackers<br/>(Arch + Debian,<br/>independent lenses)"]
+        OSV["OSV.dev<br/>(PyPI user tools)"]
+        ADV["LFS/BLFS<br/>advisories"]
+        UP["Upstream<br/>release data"]
+    end
+
+    subgraph CLOUD["Cloud (scheduled)"]
+        SWEEP["Security sweep routine<br/>CVE + version-lag checks<br/>for every installed package"]
+    end
+
+    subgraph GH["GitHub"]
+        REPO["Public blueprint repo (this)<br/>build scripts, operator contracts,<br/>skills, sweep scripts, case studies"]
+        PRIV["Private repos (config + ops)<br/>machine.env, instance scripts,<br/>live ledger, gate history"]
+        ISSUES["Issues (on the private ops repo)<br/>= findings channel<br/>'security: N actionable' +<br/>'sweep failing' self-alerts"]
+    end
+
+    subgraph SYS["LFS system — the live machine (agent-operated daily driver)"]
+        AGENT["Claude agent session<br/>(operator & package manager)"]
+        CHROOT["On-system build chroot<br/>(package factory)"]
+        SNAP["btrfs snapshot per change +<br/>systemd-boot boot counting<br/>(automatic rollback)"]
+        STATE["Machine-readable state:<br/>package manifests,<br/>STATE.md journal, action log"]
+        TRIP["Coverage tripwire<br/>(everything installed must be in<br/>a monitored feed, or ignored<br/>with a written reason)"]
+        RESCUE["Rescue root<br/>(own boot entry, never upgraded<br/>with the main root)"]
+    end
+
+    VM["QEMU VM twin<br/>(boot-test bed, runnable from<br/>any machine with repo + image)"]
+
+    FEEDS -->|CVE & version queries| SWEEP
+    REPO -->|checked out per run| SWEEP
+    SWEEP -->|opens / comments / auto-closes| ISSUES
+    ISSUES -->|notification email| OWNER
+    ISSUES -->|open findings picked up<br/>at session bootstrap| AGENT
+    REPO -->|contracts + skills<br/>loaded every session| AGENT
+    PRIV -->|machine.env +<br/>local contract + ops scripts| AGENT
+    AGENT -->|every fix lands as a script<br/>change, committed back| REPO
+    AGENT -->|upgrade: bump version,<br/>rebuild package| CHROOT
+    CHROOT -->|manifest diff applied<br/>onto a fresh snapshot| SNAP
+    SNAP -.->|if rollback also fails:<br/>comes up reachable for repair| RESCUE
+    AGENT -->|risky batches:<br/>twin-first boot-test| VM
+    AGENT -->|journals every session,<br/>logs every state change| STATE
+    AGENT -->|every local sweep +<br/>after any install| TRIP
+    OWNER -->|go/no-go,<br/>hardware steps| AGENT
+```
+
+The agent-facing detail behind each box is in
+[How it works](#how-it-works).
+
 ## For the agent
 
 Everything below is the operational picture — the contracts, the
 machinery, and the hard-won patterns. It is the bulk of this
 repository, written for the operator (an agent, or a deeply technical
 reader), not for the supervising human.
+
+> **Read the human section above first.** It is short, and its
+> [Architecture](#architecture) diagram and overview are written to be
+> read by you too — the material below is the depth behind them, not a
+> replacement.
 
 ### Operating
 
@@ -155,61 +231,10 @@ Day to day, that looks like this:
   (`/var/lib/agent/STATE.md`) and this repo, so any session can
   reconstruct where things stand without relying on chat history.
 
-The diagram shows the operating model — the agent working against the
-repo-as-spec, with snapshots, boot counting, and a rescue root
-providing automatic rollback (AGENT-DESIGN.md D1–D3):
-
-```mermaid
-flowchart TB
-    OWNER(["Owner (human)<br/>go/no-go on kernel & toolchain,<br/>hardware hands, alert recipient"])
-
-    subgraph FEEDS["External security & release feeds"]
-        direction LR
-        TRACK["Distro security trackers<br/>(Arch + Debian,<br/>independent lenses)"]
-        OSV["OSV.dev<br/>(PyPI user tools)"]
-        ADV["LFS/BLFS<br/>advisories"]
-        UP["Upstream<br/>release data"]
-    end
-
-    subgraph CLOUD["Cloud (scheduled)"]
-        SWEEP["Security sweep routine<br/>CVE + version-lag checks<br/>for every installed package"]
-    end
-
-    subgraph GH["GitHub"]
-        REPO["Public blueprint repo (this)<br/>build scripts, operator contracts,<br/>skills, sweep scripts, case studies"]
-        PRIV["Private repos (config + ops)<br/>machine.env, instance scripts,<br/>live ledger, gate history"]
-        ISSUES["Issues (on the private ops repo)<br/>= findings channel<br/>'security: N actionable' +<br/>'sweep failing' self-alerts"]
-    end
-
-    subgraph SYS["LFS system — the live machine (agent-operated daily driver)"]
-        AGENT["Claude agent session<br/>(operator & package manager)"]
-        CHROOT["On-system build chroot<br/>(package factory)"]
-        SNAP["btrfs snapshot per change +<br/>systemd-boot boot counting<br/>(automatic rollback)"]
-        STATE["Machine-readable state:<br/>package manifests,<br/>STATE.md journal, action log"]
-        TRIP["Coverage tripwire<br/>(everything installed must be in<br/>a monitored feed, or ignored<br/>with a written reason)"]
-        RESCUE["Rescue root<br/>(own boot entry, never upgraded<br/>with the main root)"]
-    end
-
-    VM["QEMU VM twin<br/>(boot-test bed, runnable from<br/>any machine with repo + image)"]
-
-    FEEDS -->|CVE & version queries| SWEEP
-    REPO -->|checked out per run| SWEEP
-    SWEEP -->|opens / comments / auto-closes| ISSUES
-    ISSUES -->|notification email| OWNER
-    ISSUES -->|open findings picked up<br/>at session bootstrap| AGENT
-    REPO -->|contracts + skills<br/>loaded every session| AGENT
-    PRIV -->|machine.env +<br/>local contract + ops scripts| AGENT
-    AGENT -->|every fix lands as a script<br/>change, committed back| REPO
-    AGENT -->|upgrade: bump version,<br/>rebuild package| CHROOT
-    CHROOT -->|manifest diff applied<br/>onto a fresh snapshot| SNAP
-    SNAP -.->|if rollback also fails:<br/>comes up reachable for repair| RESCUE
-    AGENT -->|risky batches:<br/>twin-first boot-test| VM
-    AGENT -->|journals every session,<br/>logs every state change| STATE
-    AGENT -->|every local sweep +<br/>after any install| TRIP
-    OWNER -->|go/no-go,<br/>hardware steps| AGENT
-```
-
-The pieces, in plain terms:
+The [Architecture diagram](#architecture) in the human section is the
+operating model at a glance — snapshots, boot counting, and a rescue
+root providing automatic rollback (AGENT-DESIGN.md D1–D3). The pieces
+behind it, in plain terms:
 
 - **The repo is the spec.** Build scripts (`build/*/NNN-pkg.sh`), the
   operator contract (CLAUDE.md), the divergence register
