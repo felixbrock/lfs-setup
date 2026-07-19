@@ -238,6 +238,18 @@ repo teaches the timeless; live operational state never appears here
   four kernel revisions from "PS/2 Generic Mouse" to a real multitouch
   device, with two Kconfig traps and the config-verify-gate pattern
   that catches them.
+- [002 — The GPU that was dark for days](case-studies/002-the-gpu-that-was-dark.md):
+  a desktop software-rendered on the CPU for its entire life, and the
+  initramfs-firmware rule that explains why.
+- [003 — The invisible LUKS prompt](case-studies/003-the-invisible-luks-prompt.md):
+  a one-line change exposes a boot-console gap that had been latent for
+  ten kernel revisions, held harmless by coincidence.
+- [004 — The build environment richer than the machine](case-studies/004-the-build-env-richer-than-the-machine.md):
+  three dependencies that hid in the chroot until the target had to
+  build for itself — why "prove the native pipeline" is a real gate.
+- [005 — Operating a personal machine in public without leaking it](case-studies/005-operating-in-public-without-leaking.md):
+  the accumulation threat model, the three-repo split, and why a
+  mechanical leak gate beats a sanitization checklist.
 
 ## Three-repo split
 
