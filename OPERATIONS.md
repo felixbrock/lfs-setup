@@ -1,6 +1,6 @@
 # Operating Model — running LFS as a daily driver
 
-The owner delegates routine OS operations to Claude. This documents what replaces
+The owner delegates routine OS operations to the agent. This documents what replaces
 each piece of Arch infrastructure and who does what.
 
 Companion file: **AGENT-DESIGN.md** — deliberate divergences from LFS that
@@ -88,7 +88,7 @@ Layered by what each mechanism actually guarantees:
 5. **Scheduling**: monitoring (/lfs-sweep steps 1-4 are network+repo
    only) can run as a scheduled routine producing a digest; build/apply
    requires a local session (owner-triggered or local cron running
-   claude headless — to be enabled when the cadence is proven manually).
+   the agent headless — to be enabled when the cadence is proven manually).
 6. **Resumability**: stamps + manifests + background tasks mean any
    interrupted operation resumes surgically; a session ending mid-work
    leaves uncommitted repo changes as the tripwire that /lfs-status
@@ -96,7 +96,7 @@ Layered by what each mechanism actually guarantees:
 
 ## Division of labor
 
-- Claude: monitoring sweeps, staged builds, VM boot-tests, manifest
+- The agent: monitoring sweeps, staged builds, VM boot-tests, manifest
   hygiene, binary refreshes, digests, book-edition rebases.
 - The owner: go/no-go on kernel + toolchain upgrades on real hardware,
   occasional interactive smoke tests, hardware-touching steps.

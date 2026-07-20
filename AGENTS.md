@@ -16,5 +16,5 @@ them — they are plain markdown.
 Machine-specific values (device paths, VM access, issues repo) come
 from the private sibling config repo at
 `LFS_CONFIG=${LFS_CONFIG:-~/repos/lfs-config}` — see the README's
-"Two-repo split" section. Never write instance identifiers, owner
+"Three-repo split" section. Never write instance identifiers, owner
 details, or schedules into this repo; it is public.

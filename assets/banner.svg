@@ -64,9 +64,9 @@
 
     <!-- prompt -->
     <text x="354" y="245" font-size="19">
-      <tspan fill="#64748b">$ </tspan><tspan fill="#e6edf3">claude </tspan><tspan fill="#34d399">/lfs-status</tspan>
+      <tspan fill="#64748b">$ </tspan><tspan fill="#e6edf3">agent </tspan><tspan fill="#34d399">/lfs-status</tspan>
     </text>
-    <rect x="590" y="230" width="10" height="19" fill="#34d399">
+    <rect x="578" y="230" width="10" height="19" fill="#34d399">
       <animate attributeName="opacity" values="1;0" keyTimes="0;0.5" calcMode="discrete" dur="1.2s" repeatCount="indefinite"/>
     </rect>
 

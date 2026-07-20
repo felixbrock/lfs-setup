@@ -1,6 +1,6 @@
 # Agent-Operated System Design — deliberate divergences from LFS
 
-Claude is the primary operator of this system. This file records where we
+An AI agent is the primary operator of this system. This file records where we
 deliberately diverge from LFS/BLFS conventions because an AI agent's
 operational profile differs from a human administrator's, and why.
 

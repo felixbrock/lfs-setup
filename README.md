@@ -15,7 +15,7 @@ two steps further:
    build script. Every installed file is tracked in a manifest. Every
    downloaded source is checked against a pinned hash before it is
    allowed anywhere near the build.
-2. **An agent runs the system.** Claude (via Claude Code) does the
+2. **An agent runs the system.** The agent does the
    builds, upgrades, security monitoring, and boot testing under
    written contracts (CLAUDE.md, OPERATIONS.md, AGENT-DESIGN.md). The
    human owner stays in the loop for exactly two things: go/no-go on
@@ -24,7 +24,7 @@ two steps further:
 
 The result is not a toy. It boots a real laptop, with working GPU
 acceleration, Wi-Fi, and Bluetooth, and is used as a daily driver —
-with Claude Code running *on* the LFS system itself.
+with the agent running *on* the LFS system itself.
 
 > **Two audiences read this file.** If you are a **human** deciding
 > whether to run this, read [For the human](#for-the-human) and stop —
@@ -115,7 +115,7 @@ flowchart TB
     OUT["Outward contributions<br/>public case studies +<br/>upstream bug reports / LFS dev list"]
 
     subgraph SYS["LFS system — the live machine (agent-operated daily driver)"]
-        AGENT["Claude agent session<br/>(operator & package manager)"]
+        AGENT["Agent session<br/>(operator & package manager)"]
         CHROOT["On-system build chroot<br/>(package factory)"]
         SNAP["btrfs snapshot per change +<br/>systemd-boot boot counting<br/>(automatic rollback)"]
         STATE["Machine-readable state:<br/>package manifests,<br/>STATE.md journal, action log"]
@@ -166,7 +166,7 @@ reader), not for the supervising human.
 ```sh
 git clone https://github.com/felixbrock/agent-lfs.git ~/repos/agent-lfs
 cd ~/repos/agent-lfs
-claude    # Claude Code picks up CLAUDE.md as its operator contract
+claude    # or any coding agent — the operator contract is CLAUDE.md / AGENTS.md
 ```
 
 The repo is written to be self-sufficient for an agent: telling it

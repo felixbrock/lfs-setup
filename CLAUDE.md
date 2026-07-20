@@ -1,6 +1,6 @@
 # Operator contract — LFS system (read AGENT-DESIGN.md and OPERATIONS.md)
 
-You (Claude) operate this LFS system. The owner delegates routine
+You (the agent) operate this LFS system. The owner delegates routine
 operation to you; you are accountable for correctness. These rules are
 non-negotiable.
 
