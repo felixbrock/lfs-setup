@@ -119,7 +119,7 @@ flowchart TB
         CHROOT["On-system build chroot<br/>(package factory)"]
         SNAP["btrfs snapshot per change +<br/>systemd-boot boot counting<br/>(automatic rollback)"]
         STATE["Machine-readable state:<br/>package manifests,<br/>STATE.md journal, action log"]
-        TRIP["Coverage tripwire<br/>(everything installed must be in<br/>a monitored feed, or ignored<br/>with a written reason)"]
+        TRIP["Invariant check (I1–I5)<br/>(session post-condition: every file<br/>traces to a script, every source to<br/>a pin, everything is monitored,<br/>scripts keep the contract style)"]
         RESCUE["Rescue root<br/>(own boot entry, never upgraded<br/>with the main root)"]
     end
 
@@ -142,7 +142,7 @@ flowchart TB
     SNAP -.->|if rollback also fails:<br/>comes up reachable for repair| RESCUE
     AGENT -->|risky batches:<br/>twin-first boot-test| VM
     AGENT -->|journals every session,<br/>logs every state change| STATE
-    AGENT -->|every local sweep +<br/>after any install| TRIP
+    AGENT -->|post-condition of<br/>every session| TRIP
     OWNER -->|go/no-go,<br/>hardware steps| AGENT
 ```
 
@@ -201,6 +201,8 @@ editing for instance values.
 - [AGENT-DESIGN.md](AGENT-DESIGN.md) — the register of every deviation
   from the LFS book.
 - [PROVENANCE.md](PROVENANCE.md) — the supply-chain rules.
+- [INVARIANTS.md](INVARIANTS.md) — the standing invariants the system
+  is checked against at the end of every session.
 - [case-studies/](case-studies/) — real diagnosis chains from operating
   the system, written up as transferable patterns. The best sense of
   what this is actually like.
@@ -282,6 +284,43 @@ behind it, in plain terms:
   without relying on chat history. The action log's append-only
   property is kernel-enforced (`chattr +a`): the agent writes its own
   audit trail but cannot rewrite it.
+
+### Invariants
+
+The guarantees above are collected into an explicit register —
+[INVARIANTS.md](INVARIANTS.md) — and checked as a whole. The idea is
+borrowed from the seL4 verification project ([Klein et al., "seL4:
+Formal Verification of an OS Kernel", SOSP 2009](https://www.sigops.org/s/conferences/sosp/2009/papers/klein-sosp09.pdf)):
+80% of that proof effort went into invariants — properties of system
+state that must hold before and after every operation — and the
+authors found the invariant list valuable in itself, independent of
+the proof. An ops repo can't prove theorems over 300 shell scripts,
+but it can take the shape of the method: state the invariants
+explicitly, and check every one deterministically.
+
+- **I1** — every binary and library on the system appears in a package
+  manifest: nothing was installed outside the machinery.
+- **I2** — every manifest traces to a build script in the repos: no
+  change exists that never landed as a script.
+- **I3** — every artifact staged in `/sources` is pinned in the hash
+  ledger: nothing is waiting to be built that never passed the gate.
+- **I4** — everything runnable is security-monitored or ignored with a
+  written reason (the coverage tripwire above).
+- **I5** — build scripts keep the failure-visible style the contract
+  demands (`set -euo pipefail`, one command per line).
+
+`scripts/invariant-check.sh` runs all five read-only, as the
+post-condition of every operational session: an upgrade isn't done
+when the package builds — it's done when the invariants hold again.
+Pre-existing coverage gaps are pinned in a baseline rather than
+silently ignored (the same honest trade the provenance ledger makes);
+the baseline describes the concrete machine, so it lives in the
+private ops repo alongside the live ledger, and the checker resolves
+both through the [three-repo split](#three-repo-split). Its first full
+run earned its keep: it surfaced a toolchain that had been installed
+without joining the security sweep and two build scripts violating the
+one-command-per-line rule — exactly the class of small,
+testing-resistant fault the seL4 paper's bug data warns about.
 
 ### Building by hand
 
