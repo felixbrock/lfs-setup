@@ -53,8 +53,10 @@ whole policy.
   automation.
 - Divergences from the book: justify against the operator profile,
   register in AGENT-DESIGN.md.
-- End every operational session by updating the on-system STATE.md and
-  appending to /var/log/agent-actions.log.
+- End every operational session by running scripts/invariant-check.sh
+  (the session post-condition — a FAIL is a finding to fix or register,
+  see INVARIANTS.md), updating the on-system STATE.md, and appending to
+  /var/log/agent-actions.log.
 
 ## Skills (in .claude/skills/, use them — do not improvise the procedure)
 - /lfs-status — state handshake: host, chroot, VM, git, gates

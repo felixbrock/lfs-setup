@@ -24,3 +24,5 @@ brave-bin brave layout dir in /opt (tier 1b: brave)
 rg ripgrep binary name (tier 1b + inventory: ripgrep)
 gateb-check our own repo script
 screenshot-region our own shim (900, flameshot interim)
+gofmt go toolchain bundle (tier 1b: go)
+power-profile our own repo script (gated power-profile switcher)

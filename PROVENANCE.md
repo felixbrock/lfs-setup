@@ -57,6 +57,27 @@ For anyone reproducing this system from the repo: the ledger means you
 verify your downloads against the exact bytes this system was built
 from, not against whatever the host serves you today.
 
+## Assumptions (the trust base)
+
+Verification always stops somewhere; what matters is saying where
+(the seL4 verification stated its unproven base — compiler, hardware,
+boot code — explicitly, and that list is part of the assurance). The
+guarantees above rest on trusting:
+
+- **Upstream itself.** The ledger proves you got the bytes that were
+  pinned, not that the pinned bytes are benign. The book md5 is an
+  independent second channel only at first sight; a compromised
+  upstream release compromises this system.
+- **The original host toolchain.** ch5 was cross-built with another
+  distro's gcc/binutils/glibc — the classic trusting-trust boundary.
+  Everything since is self-hosted, but the ancestry starts there.
+- **Vendor binaries in /opt.** Opaque blobs; monitored for version lag
+  (tier 1b) and pinned by hash, never source-audited.
+- **The hardware, its firmware, and the boot chain** (UEFI, GRUB,
+  microcode, device firmware blobs) as shipped.
+- **sha256 collision resistance** (md5 is accepted only as the
+  first-sight second channel, per the limitation below).
+
 ## Known limitations (open hardening items)
 
 - The ledger was created 2026-07-17, after most packages were already

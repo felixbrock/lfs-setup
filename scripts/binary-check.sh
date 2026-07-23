@@ -22,7 +22,7 @@ POST="$REPO/build/blfs/scripts-post"
 pin() {
   # pin <extended-regex with one capture group> -> captured version
   local re="$1"
-  grep -rhoE "$re" "$POST"/*.sh 2>/dev/null | head -1 | sed -E "s/$re/\\1/" || true
+  grep -rhoE "$re" "$POST"/*.sh "$REPO"/build/gated/*.sh 2>/dev/null | head -1 | sed -E "s/$re/\\1/" || true
 }
 
 arch_ver() {
@@ -79,6 +79,10 @@ report cloudflared "$(pin 'cloudflared-([0-9.]+)-linux')"    "$(arch_ver cloudfl
 report discord "$(pin 'discord-([0-9.]+)\.tar\.gz')"         "$(arch_ver discord)"
 report gcloud "$(pin 'google-cloud-[a-z]+-([0-9.]+)-linux')" "$(aur_ver google-cloud-cli)"
 report chrome "$(pin 'google-chrome[a-z-]*[_-]([0-9.]+)')"   "$(aur_ver google-chrome)"
+# go surfaced UNMONITORED by the first invariant-check I4 run (2026-07-23):
+# a /usr/local toolchain installed via the gated flow — pin() now also
+# reads build/gated so gated installs join the lag check
+report go     "$(pin 'go([0-9.]+)[. ]linux-amd64')"          "$(arch_ver go)"
 
 # tier 1b-py: user-level PyPI tools (uv) — outside the source inventory
 # AND the distro trackers; OSV.dev is the deterministic feed. Pins live
